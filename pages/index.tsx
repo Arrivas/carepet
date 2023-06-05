@@ -10,7 +10,7 @@ import {
 import { MdOutlinePets } from "react-icons/md";
 import Image from "next/image";
 import { NextPage } from "next";
-import { loginIsRequiredClient } from "./auth/useAuth";
+import { checkAuth } from "../auth/useAuth";
 
 const slideImages = [
   {
@@ -103,7 +103,7 @@ const servicesItems = [
 ];
 
 const Home: NextPage = () => {
-  loginIsRequiredClient();
+  checkAuth();
   return (
     <>
       <header>

@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "react-datepicker/dist/react-datepicker.css";
+import TopNav from "../components/TopNav";
 
 export interface BookingObject {
   bookingDetails: {
@@ -149,9 +150,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Providers>
       <Toaster />
+
       <SideNav openNav={openNav} setOpenNav={setOpenNav} />
+      {!user?.email && <TopNav />}
       <div
         className={` ${
+          (pathName === "/contact" && !user?.email) ||
           pathName === "/" ||
           pathName === "/login" ||
           pathName === "/create/account"

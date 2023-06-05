@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { usePathname, useRouter } from "next/navigation";

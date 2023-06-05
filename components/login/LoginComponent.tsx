@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { firestore, auth } from "../../config/firebase";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import FormikField from "../forms/FormikField";
 import AppFormField from "../forms/AppFormField";
 import SubmitButton from "../forms/SubmitButton";
+import { RootState } from "../../store";
 
 const LoginComponent = () => {
+  const user = useSelector((state: RootState) => state.user.user);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const initialValues = {
@@ -34,6 +36,7 @@ const LoginComponent = () => {
         }
       });
   };
+  if (user?.email) return <></>;
   return (
     <>
       <title>Login</title>

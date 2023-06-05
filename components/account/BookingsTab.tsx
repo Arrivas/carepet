@@ -11,16 +11,16 @@ const BookingsTab = () => {
       <div className="flex flex-row justify-around">
         <button
           onClick={() => setActiveTab("Ongoing")}
-          className={`border-b py-2 w-[40%] border-white ${
-            activeTab === "Ongoing" ? "border-black" : "border-white"
+          className={`border-b py-2 w-[40%]  ${
+            activeTab === "Ongoing" ? "border-gray-300" : "border-white"
           }`}
         >
           Ongoing
         </button>
         <button
           onClick={() => setActiveTab("History")}
-          className={`border-b py-2 w-[40%] border-white ${
-            activeTab === "History" ? "border-black" : "border-white"
+          className={`border-b py-2 w-[40%]  ${
+            activeTab === "History" ? "border-gray-300" : "border-white"
           }`}
         >
           History

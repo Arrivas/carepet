@@ -152,7 +152,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Toaster />
 
       <SideNav openNav={openNav} setOpenNav={setOpenNav} />
-      {!user?.email && <TopNav />}
       <div
         className={` ${
           (pathName === "/contact" && !user?.email) ||

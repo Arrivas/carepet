@@ -22,7 +22,7 @@ const TopNav = () => {
         />
       </div>
 
-      <div className="flex gap-4">
+      <div className="gap-4 hidden md:flex">
         <Link className="text-lg" href="/">
           Home
         </Link>

@@ -290,8 +290,6 @@
   background: var(--pink);
 }
 
-/* RESPONSIVE QUERIES */
-
 @media (min-width: 320px) {
   .titleFlex {
     display: flex;
@@ -363,7 +361,6 @@
     flex-basis: calc(25% - 18px);
   }
 }
-/*scroll back*/
 
 #myBtn {
   display: none;

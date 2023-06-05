@@ -68,7 +68,7 @@ const LandingPage = () => {
                       <div className="home-container1">
                         <img
                           alt="image"
-                          src="./hero/playground_assets\logo2.png"
+                          src="./hero/playground_asset/logo2.png"
                           className="home-image"
                         />
                         <div
@@ -647,7 +647,7 @@ const LandingPage = () => {
                       <h3 className="guide-name">
                         <span>Joshua Nadado</span>
                       </h3>
-                      <span className="guide-location">
+                      <span className="guide-loca'/'tion">
                         <span>Developer</span>
                       </span>
                     </div>
@@ -659,7 +659,7 @@ const LandingPage = () => {
                   <div className="guide-guide guide-root-class-name1">
                     <img
                       alt="image"
-                      src="./hero\playground_assets\guide-1.jpeg"
+                      src="./hero/playground_assets/guide-1.jpeg"
                       className="guide-portrait"
                     />
                     <div className="guide-details">

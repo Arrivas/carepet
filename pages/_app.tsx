@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "react-datepicker/dist/react-datepicker.css";
 import TopNav from "../components/TopNav";
+import "../styles/main.custom.css";
+import "../styles/main.homeStyle.css";
 
 export interface BookingObject {
   bookingDetails: {
@@ -149,6 +151,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Providers>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="utf-8" />
+      <meta httpEquiv="Permissions-Policy" content="interest-cohort=()"></meta>
       <Toaster />
 
       <SideNav openNav={openNav} setOpenNav={setOpenNav} />
@@ -156,6 +161,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         className={` ${
           (pathName === "/contact" && !user?.email) ||
           pathName === "/" ||
+          pathName === "/gallery" ||
+          pathName === "/about" ||
           pathName === "/login" ||
           pathName === "/create/account"
             ? ""

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { setUser } from "../../store/userSlice";
 import { updateDoc, doc, getFirestore } from "firebase/firestore";
-import { firestore } from "../../config/firebase";
 import { setLoading } from "../../store/loadingSlice";
 import { toast } from "react-hot-toast";
 
@@ -163,7 +162,7 @@ const BillingTab = () => {
           >
             <div className="p-4 gap-4">
               <Cards
-                number={card.number}
+                number={card.number?.replace(/(?<=\d{4})\d/g, "*")}
                 expiry={card.expiry}
                 cvc={card.cvc}
                 name={card.name}

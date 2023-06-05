@@ -74,6 +74,9 @@ const newService = () => {
       },
       imgLink: "",
       docId: "",
+      history: [],
+      ongoing: [],
+      scheduledDates: [],
     };
 
     dispatch(setLoading(true));

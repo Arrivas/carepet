@@ -11,10 +11,14 @@ import { setUser } from "../store/userSlice";
 import { setLoading } from "../store/loadingSlice";
 import ProfileTab from "../components/account/ProfileTab";
 import BillingTab from "../components/account/BillingTab";
+import MyServicesTab from "../components/account/MyServicesTab";
+import BookingsTab from "../components/account/BookingsTab";
 
-const sideAccountTabItems = [
+let sideAccountTabItems = [
   { id: 1, title: "My Profile" },
   { id: 2, title: "Billing" },
+  { id: 3, title: "My Services" },
+  { id: 4, title: "Bookings" },
 ];
 
 export interface ImageState {
@@ -30,6 +34,18 @@ const profile = () => {
   const [activeTab, setActiveTab] = useState("My Profile");
   const [image, setImage] = useState<ImageState>();
   const dispatch = useDispatch();
+
+  if (!user?.email) return <></>;
+
+  if (user?.userType === "Pet-Care Provider") {
+    sideAccountTabItems = sideAccountTabItems.filter(
+      (item) => item.title !== "Billing"
+    );
+  } else if (user?.userType === "Client") {
+    sideAccountTabItems = sideAccountTabItems.filter(
+      (item) => item.title !== "My Services"
+    );
+  }
 
   const initialValues = {
     name: user?.name || "",
@@ -90,17 +106,19 @@ const profile = () => {
         <h4 className="my-3 font-semibold text-lg">Account Settings</h4>
         <div className="bg-white rounded-md h-[90%] overflow-hidden flex flex:col md:flex-row relative">
           <div className="flex flex-col items-start w-full max-w-[227px] p-5 gap-3 border-r border-gray-100">
-            {sideAccountTabItems.map((item) => (
-              <button
-                onClick={() => setActiveTab(item.title)}
-                className={`mr-14 ${
-                  activeTab === item.title ? "bg-green-50 text-green-550" : ""
-                } p-2 px-4 rounded-full tracking-wider font-semibold`}
-                key={item.id}
-              >
-                {item.title}
-              </button>
-            ))}
+            {sideAccountTabItems.map((item) => {
+              return (
+                <button
+                  onClick={() => setActiveTab(item.title)}
+                  className={`mr-14 ${
+                    activeTab === item.title ? "bg-green-50 text-green-550" : ""
+                  } p-2 px-4 rounded-full tracking-wider font-semibold`}
+                  key={item.id}
+                >
+                  {item.title}
+                </button>
+              );
+            })}
           </div>
           <div className="flex-grow overflow-hidden p-5">
             {activeTab === "My Profile" ? (
@@ -113,8 +131,12 @@ const profile = () => {
                 loading={loading}
                 user={user}
               />
-            ) : (
+            ) : activeTab === "Billing" ? (
               <BillingTab />
+            ) : activeTab === "Bookings" ? (
+              <BookingsTab />
+            ) : (
+              <MyServicesTab />
             )}
           </div>
         </div>

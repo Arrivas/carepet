@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { ClientSliceState } from "../pages/_app";
+import { Client } from "../pages/_app";
 
-const initialState = {
-  user: {} as any,
+const initialState: ClientSliceState = {
+  user: {} as Client,
 };
 
 const userSlice = createSlice({

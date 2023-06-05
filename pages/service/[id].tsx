@@ -1,7 +1,17 @@
-import React from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { firestore } from "../../config/firebase";
-import { GetStaticProps } from "next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { CreditCard } from "../_app";
+import BookingDetails from "../../components/booking/BookingDetails";
+import SuccessPage from "../../components/SuccessPage";
 
 export const getStaticPaths = async () => {
   const querySnapshot = await getDocs(collection(firestore, "petServices"));
@@ -33,7 +43,17 @@ export const getStaticProps = async (context: any) => {
 };
 
 const PetServiceDetails = ({ petServiceData }: any) => {
-  const { docId, imgLink, providerInfo, service } = petServiceData;
+  const [selectedCard, setSelectedCard] = useState<CreditCard | undefined>(
+    undefined
+  );
+  const [bookedDetails, setBookedDetails] = useState<any>(undefined);
+  const user = useSelector((state: RootState) => state.user.user);
+  const {
+    docId: serviceDocId,
+    imgLink,
+    providerInfo,
+    service,
+  } = petServiceData;
   const { docId: provDocId, email, name } = providerInfo;
   const {
     description,
@@ -42,11 +62,79 @@ const PetServiceDetails = ({ petServiceData }: any) => {
     serviceName,
     serviceProviderName,
   } = service;
+
+  const handleBook = async () => {
+    const bookingDetails = {
+      clientDetails: {
+        name: user.name,
+        email: user.email,
+        imgUrl: user.imgUrl,
+        selectedCard,
+        userId: user.docId,
+      },
+      bookingDetails: {
+        description,
+        longDescription,
+        price,
+        serviceName,
+        serviceProviderName,
+        provDocId,
+        email,
+        name,
+        imgUrl: imgLink,
+        serviceDocId,
+      },
+    };
+    const userCopy: any = { ...user };
+    userCopy.bookings = {
+      ...userCopy.bookings,
+      ongoing: userCopy.bookings.ongoing.concat(bookingDetails),
+    };
+
+    try {
+      // Update user document
+      const userRef = doc(firestore, "client", user?.docId);
+      await updateDoc(userRef, userCopy);
+
+      // Update petCareProvider document
+      const petCareProviderRef = doc(firestore, "petCareProvider", provDocId);
+      const petCareProviderDoc = await getDoc(petCareProviderRef);
+      if (petCareProviderDoc.exists()) {
+        const petCareProviderData = petCareProviderDoc.data();
+        const updatedOngoing = [
+          ...(petCareProviderData.bookings?.ongoing || []),
+          bookingDetails,
+        ];
+
+        await updateDoc(petCareProviderRef, {
+          bookings: {
+            ongoing: updatedOngoing,
+          },
+        });
+      }
+      setBookedDetails(bookingDetails);
+    } catch (error) {
+      console.error("Error handling booking:", error);
+    }
+  };
+
   return (
     <>
       <title>{serviceName}</title>
-      <div className="p-5">
-        <div>{serviceName}</div>
+      <div className="h-screen bg-gray-100 p-5">
+        <div className="p-5 rounded-md h-full bg-white">
+          {bookedDetails !== undefined ? (
+            <SuccessPage />
+          ) : (
+            <BookingDetails
+              handleBook={handleBook}
+              petServiceData={petServiceData}
+              selectedCard={selectedCard}
+              setSelectedCard={setSelectedCard}
+              user={user}
+            />
+          )}
+        </div>
       </div>
     </>
   );

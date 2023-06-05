@@ -12,12 +12,34 @@ import SideNav from "../components/SideNav";
 import { Toaster } from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
+import "react-datepicker/dist/react-datepicker.css";
 
+export interface BookingObject {
+  bookingDetails: {
+    description: string;
+    email: string;
+    imgUrl: string;
+    longDescription: string;
+    name: string;
+    price: string;
+    provDocId: string;
+    serviceDocId: string;
+    serviceName: string;
+    serviceProviderName: string;
+  };
+  clientDetails: {
+    email: string;
+    imgUrl: string;
+    name: string;
+    selectedCard: CreditCard;
+    userId: string;
+  };
+}
 export interface Client {
   age: string;
   bookings: {
-    history: any[];
-    ongoing: any;
+    history: BookingObject[];
+    ongoing: BookingObject[];
   };
   docId: string;
   email: string;
@@ -26,7 +48,11 @@ export interface Client {
   name: string;
   password: string;
   userType: string;
-  creditCards: any[];
+  creditCards: CreditCard[];
+}
+
+export interface ClientSliceState {
+  user: Client;
 }
 
 export interface PetCareProvider {
@@ -51,6 +77,29 @@ export interface CreditCard {
   name: string;
   focus: any;
   id: any;
+}
+
+export interface PetService {
+  docId: string;
+  history: any[];
+  ongoing: any[];
+  imgLink: string;
+  providerInfo: {
+    docId: string;
+    email: string;
+    name: string;
+  };
+  service: {
+    description: string;
+    longDescription: string;
+    price: string;
+    serviceName: string;
+    serviceProviderName: string;
+  };
+}
+
+export interface PetServiceInitialState {
+  value: PetService[];
 }
 
 const fetchUserData = async (email: string | null | undefined) => {

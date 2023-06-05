@@ -25,6 +25,7 @@ const fetchPetServices = async (search: string) => {
 const dashboard = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.user);
+
   const petServices = useSelector(
     (state: RootState) => state.petServices.value
   );
@@ -33,38 +34,39 @@ const dashboard = () => {
   const fetchPetServices = async (search: string) => {
     try {
       const querySnapshot = await getDocs(collection(firestore, "petServices"));
-      const services = [] as any;
-      querySnapshot.forEach((doc) => services.push(doc.data()));
-      // const petServices = querySnapshot.docs
-      //   .map((doc) => doc.data())
-      //   .filter((service) =>
-      //     service.service.serviceName
-      //       ?.toLowerCase()
-      //       .includes(search?.toLowerCase())
-      //   );
-      return services;
+      // const services = [] as any;
+      // querySnapshot.forEach((doc) => services.push(doc.data()));
+      if (search === "") return [];
+      const petServices = querySnapshot.docs
+        .map((doc) => doc.data())
+        .filter((service) =>
+          service.service.serviceName
+            ?.toLowerCase()
+            .includes(search?.toLowerCase())
+        );
+      return petServices;
     } catch (error) {
       console.error("Error fetching documents:", error);
     }
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    if (isMounted) {
-      fetchPetServices("asd").then((res) => dispatch(setPetServices(res)));
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   // useEffect(() => {
-  //   const debounceTimer = setTimeout(() => {
-  //     fetchPetServices(search);
-  //   }, 400);
+  //   let isMounted = true;
+  //   if (isMounted) {
+  //     fetchPetServices(search).then((res) => console.log(res));
+  //   }
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
 
-  //   return () => clearTimeout(debounceTimer);
-  // }, [search]);
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      fetchPetServices(search).then((res) => dispatch(setPetServices(res)));
+    }, 400);
+
+    return () => clearTimeout(debounceTimer);
+  }, [search]);
 
   return (
     <>
@@ -89,7 +91,7 @@ const dashboard = () => {
 
         <div className="mt-5">
           <div className="grid grid-cols-3 overflow-y-auto overflow-x-hidden gap-4 justify-center flex-grow-0">
-            {petServices.map((item: any) => (
+            {petServices?.map((item: any) => (
               <div
                 key={item.docId}
                 className="w-[350px] p-4 border mx-auto border-gray-300 shadow-md rounded-md mt-5"

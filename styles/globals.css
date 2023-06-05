@@ -6,3 +6,18 @@
 * {
   box-sizing: border-box;
 }
+
+.rccs__card {
+  width: 250px !important;
+  height: 150px !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

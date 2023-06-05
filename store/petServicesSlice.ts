@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { PetServiceInitialState, PetService } from "../pages/_app";
 
-const initialState = {
-  value: [] as any,
+const initialState: PetServiceInitialState = {
+  value: [] as PetService[],
 };
 
 const petServicesSlice = createSlice({

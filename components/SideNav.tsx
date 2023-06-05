@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { MdDashboard, MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { BsImage, BsMegaphone } from "react-icons/bs";
+import { BsImage, BsMegaphone, BsCardChecklist } from "react-icons/bs";
 import { AiOutlineUser, AiFillWechat } from "react-icons/ai";
 import { CiLogout } from "react-icons/ci";
 import Link from "next/link";
@@ -46,6 +46,12 @@ const navItems = [
     icon: <BsMegaphone color="#fff" size={25} />,
     route: "/newService",
   },
+  // {
+  //   id: 6,
+  //   label: "Bookings",
+  //   icon: <BsCardChecklist color="#fff" size={25} />,
+  //   route: "/newService",
+  // },
 ];
 
 const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {

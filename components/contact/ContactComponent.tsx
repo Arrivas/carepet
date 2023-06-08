@@ -49,7 +49,7 @@ const ContactComponent = () => {
   return (
     <>
       <title>Contact Us</title>
-      <div className="flex flex-col h-screen items-center justify-center overflow-hidden p-5">
+      <div className="flex flex-col h-screen items-center justify-center overflow-hidden p-5 font-Nunito">
         <h1 className="text-3xl tracking-wide my-2">CONTACT US</h1>
         <p className="text-gray-500 italic">
           If You Want To Know Anything From Us ? Please Drop A Note Here !

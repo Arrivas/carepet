@@ -3,6 +3,8 @@ import { MdDashboard, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { BsImage, BsMegaphone, BsCardChecklist } from "react-icons/bs";
 import { AiOutlineUser, AiFillWechat } from "react-icons/ai";
 import { CiLogout } from "react-icons/ci";
+import { BiMessageDetail } from "react-icons/bi";
+import { MdAlternateEmail } from "react-icons/md";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -31,20 +33,26 @@ const navItems = [
   {
     id: 3,
     label: "Contact Us",
-    icon: <AiFillWechat color="#fff" size={25} />,
+    icon: <MdAlternateEmail color="#fff" size={25} />,
     route: "/contact",
   },
   {
     id: 4,
     label: "Gallery",
     icon: <BsImage color="#fff" size={25} />,
-    route: "#",
+    route: "/gallery",
   },
   {
     id: 5,
     label: "Post Services",
     icon: <BsMegaphone color="#fff" size={25} />,
     route: "/newService",
+  },
+  {
+    id: 5,
+    label: "Messages",
+    icon: <BiMessageDetail color="#fff" size={25} />,
+    route: "/messages",
   },
   // {
   //   id: 6,
@@ -83,9 +91,11 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
             <aside
               id="logo-sidebar"
               aria-labelledby="logo-sidebar"
-              className={`fixed top-0 left-0 z-40 w-64 h-screen duration-700 ease-in-out transition-transform ${
-                openNav ? " -translate-x-full" : "translate-x-0"
-              }`}
+              className={`fixed top-0 font-Nunito left-0 z-40 w-64 ${
+                openNav
+                  ? "-translate-x-full"
+                  : "md:translate-x-0 -translate-x-full"
+              }  h-screen duration-700 ease-in-out transition-transform `}
               aria-label="Sidebar"
             >
               <button
@@ -124,10 +134,17 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
                       <li key={item.id}>
                         <Link
                           href={item.route}
-                          className="flex items-center p-2 rounded-lg hover:bg-white/20"
+                          className="relative flex justify-between   items-center p-2 rounded-lg hover:bg-white/20"
                         >
-                          {item.icon}
-                          <span className="ml-3 text-white">{item.label}</span>
+                          <div className="flex items-center">
+                            {item.icon}
+                            <span className="ml-3 text-white">
+                              {item.label}
+                            </span>
+                          </div>
+                          {item.label === "Messages" && (
+                            <span className="min-h-[10px] min-w-[10px] rounded-full"></span>
+                          )}
                         </Link>
                       </li>
                     );

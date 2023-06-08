@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { firestore, auth } from "../../config/firebase";
+import app, { firestore, auth } from "../../config/firebase";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -8,17 +8,16 @@ import FormikField from "../forms/FormikField";
 import AppFormField from "../forms/AppFormField";
 import SubmitButton from "../forms/SubmitButton";
 import { RootState } from "../../store";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const LoginComponent = () => {
-  const user = useSelector((state: RootState) => state.user.user);
   const [showPassword, setShowPassword] = useState(false);
+  const [user, loading] = useAuthState(auth);
   const router = useRouter();
   const initialValues = {
     email: "",
     password: "",
   };
-  const dispatch = useDispatch();
-
   const handleSubmit = (values: any, { setErrors }: any) => {
     signInWithEmailAndPassword(
       auth,
@@ -26,7 +25,8 @@ const LoginComponent = () => {
       values.password.trim()
     )
       .then((userCredential) => {
-        router.replace("/dashboard");
+        router.push("/dashboard");
+        localStorage.setItem("hasUser", "true");
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
@@ -36,11 +36,12 @@ const LoginComponent = () => {
         }
       });
   };
-  if (user?.email) return <></>;
+
+  if (user?.email && !loading) return <></>;
   return (
     <>
       <title>Login</title>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center font-Nunito">
         <div className="pt-10 h-[550px] xs:h-screen w-[455px] xs:w-[375px] font-roboto relative px-2 xs:px-5">
           <img
             className="mt-6 h-[1.8rem] object-cover object-center my-10"
@@ -48,12 +49,10 @@ const LoginComponent = () => {
             alt="logo"
           />
           <h1 className="text-3xl font-semibold">Log in to your Account</h1>
-          <p className="text-gray-300">
-            Welcome back! Select method to log in:
-          </p>
+
           {/* form */}
           <FormikField initialValues={initialValues} onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-3 mt-4 mb-2">
+            <div className="flex flex-col gap-3 mt-2 mb-2">
               <AppFormField name="email" placeholder="Email" />
               <AppFormField
                 type="password"

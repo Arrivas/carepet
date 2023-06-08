@@ -17,6 +17,10 @@ module.exports = {
           550: "#40ac64",
         },
       },
+      fontFamily: {
+        Montserrat: ["Montserrat", "sans-serif"],
+        Nunito: ["Nunito", "sans-serif"],
+      },
     },
   },
   plugins: [],

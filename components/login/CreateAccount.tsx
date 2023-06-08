@@ -3,14 +3,7 @@ import FormikField from "../forms/FormikField";
 import SubmitButton from "../forms/SubmitButton";
 import Link from "next/link";
 import React, { useState } from "react";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  doc,
-  getFirestore,
-} from "firebase/firestore";
-import { getStorage, ref, uploadString } from "firebase/storage";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { firestore, auth } from "../../config/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -27,9 +20,10 @@ const userTypeItems = [
   { id: 1, label: "Client" },
   { id: 2, label: "Pet-Care Provider" },
 ];
+import { welcomeMail } from "../../config/welcomeString";
 
 const CreateAccount = () => {
-  const loading = useSelector((state: RootState) => state.loading.loading);
+  const loading = useSelector((state: RootState) => state?.loading.loading);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedUserType, setSelectedUserType] = useState(userTypeItems[0]);
   const dispatch = useDispatch();
@@ -71,14 +65,19 @@ const CreateAccount = () => {
       password: values.password.trim(),
       age: values.age,
       userType: selectedUserType.label,
-      bookings: {
-        ongoing: [],
-        history: [],
-      },
       imgUrl:
         "https://firebasestorage.googleapis.com/v0/b/carepet-16aea.appspot.com/o/user.webp?alt=media&token=6518df48-8968-4e3a-9925-9821c96b524f",
     };
-    if (newUser.userType === "Client") newUser.creditCards = [];
+
+    const collectionRef = collection(firestore, "mail");
+    const newDocument = {
+      to: [`${newUser.email}`],
+      message: {
+        subject: "Welcome",
+        text: "",
+        html: welcomeMail,
+      },
+    };
     dispatch(setLoading(true));
     try {
       fetchSignInMethodsForEmail(auth, newUser.email).then((doc) => {
@@ -107,6 +106,7 @@ const CreateAccount = () => {
           );
           await updateDoc(documentRef, { docId: docRef.id });
           resetForm({ values: newUser });
+          await addDoc(collectionRef, newDocument);
           router.replace("/dashboard");
         })
         .catch((error) => {

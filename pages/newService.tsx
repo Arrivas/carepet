@@ -1,4 +1,3 @@
-import WithAuth from "../components/WithAuth";
 import AppFormField from "../components/forms/AppFormField";
 import FormikField from "../components/forms/FormikField";
 import SubmitButton from "../components/forms/SubmitButton";
@@ -22,11 +21,14 @@ import { RootState } from "../store";
 import { setLoading } from "../store/loadingSlice";
 import { addPetService } from "../store/petServicesSlice";
 import { useRouter } from "next/navigation";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../config/firebase";
 
 const newService = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const loading = useSelector((state: RootState) => state.loading.loading);
+  const [loading] = useAuthState(auth);
+  const isLoading = useSelector((state: RootState) => state.loading.loading);
   const [image, setImage] = useState<any>({
     file: null,
     fileName: "",
@@ -68,17 +70,20 @@ const newService = () => {
         price: values.price,
       },
       providerInfo: {
-        name: user.name,
-        email: user.email,
-        docId: user.docId,
+        providerName: user.name,
+        providerEmail: user.email,
+        providerDocId: user.docId,
+        providerPhone: user.phone,
+        providerImgUrl: user.imgUrl,
       },
       imgLink: "",
       docId: "",
-      history: [],
-      ongoing: [],
-      scheduledDates: [],
+      scheduling: [],
     };
-
+    if (user?.phone === undefined || user?.phone === "") {
+      toast.error("add your phone number first");
+      return router.push("/account");
+    }
     dispatch(setLoading(true));
     try {
       const storage = getStorage();
@@ -111,7 +116,6 @@ const newService = () => {
   };
 
   if (user?.userType === "Client") router.replace("./dashboard");
-
   return (
     <>
       {user?.userType === "Client" ? (
@@ -119,11 +123,23 @@ const newService = () => {
       ) : (
         <>
           <title>Post Services</title>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center font-Nunito">
             <div className="pt-10 h-[550px] xs:h-screen w-[455px] xs:w-[375px] font-roboto relative px-2 xs:px-5">
               <h1 className="text-3xl font-semibold mb-5">
                 Upload New Service To Carepet
               </h1>
+              {user?.phone === undefined || user?.phone === "" ? (
+                <button
+                  onClick={() => router.push("/account")}
+                  className="bg-yellow-100 w-full p-2 text-left my-2"
+                  type="button"
+                >
+                  <span className="text-yellow-400">
+                    add your spanhone# first before create new service. <br />
+                    <span className="font-semibold">click here</span>
+                  </span>
+                </button>
+              ) : null}
               <FormikField
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
@@ -171,7 +187,7 @@ const newService = () => {
                   </p>
                 </div>
                 <div className="pb-5">
-                  <SubmitButton title="Upload" disabled={loading} />
+                  <SubmitButton title="Upload" disabled={isLoading} />
                 </div>
               </FormikField>
             </div>
@@ -182,4 +198,4 @@ const newService = () => {
   );
 };
 
-export default WithAuth(newService);
+export default newService;

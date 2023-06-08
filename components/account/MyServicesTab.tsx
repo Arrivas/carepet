@@ -55,36 +55,36 @@ const MyServicesTab = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const q = query(
-          collection(firestore, "petServices"),
-          where("providerInfo.docId", "==", user?.docId)
-        );
+  // useEffect(() => {
+  //   const fetchServices = async () => {
+  //     try {
+  //       const q = query(
+  //         collection(firestore, "petServices"),
+  //         where("providerInfo.docId", "==", user?.docId)
+  //       );
 
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          const results: any = [];
-          querySnapshot.forEach((doc) => {
-            results.push(doc.data());
-          });
+  //       const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //         const results: any = [];
+  //         querySnapshot.forEach((doc) => {
+  //           results.push(doc.data());
+  //         });
 
-          dispatch(setPetServices(results));
-        });
+  //         dispatch(setPetServices(results));
+  //       });
 
-        return unsubscribe;
-      } catch (error) {
-        console.error("Error fetching pet service:", error);
-        return null;
-      }
-    };
+  //       return unsubscribe;
+  //     } catch (error) {
+  //       console.error("Error fetching pet service:", error);
+  //       return null;
+  //     }
+  //   };
 
-    const unsubscribe = fetchServices();
+  //   const unsubscribe = fetchServices();
 
-    return () => {
-      unsubscribe;
-    };
-  }, []);
+  //   return () => {
+  //     unsubscribe;
+  //   };
+  // }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

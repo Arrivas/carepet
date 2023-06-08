@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { store } from "../store";
+import { RootState, store } from "../store";
 import { setUser } from "../store/userSlice";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import { firestore } from "../config/firebase";
@@ -13,37 +13,13 @@ import { Toaster } from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "react-datepicker/dist/react-datepicker.css";
-import TopNav from "../components/TopNav";
 import "../styles/main.custom.css";
 import "../styles/main.homeStyle.css";
+import React from "react";
+import VerifyEmail from "../components/VerifyEmail";
 
-export interface BookingObject {
-  bookingDetails: {
-    description: string;
-    email: string;
-    imgUrl: string;
-    longDescription: string;
-    name: string;
-    price: string;
-    provDocId: string;
-    serviceDocId: string;
-    serviceName: string;
-    serviceProviderName: string;
-  };
-  clientDetails: {
-    email: string;
-    imgUrl: string;
-    name: string;
-    selectedCard: CreditCard;
-    userId: string;
-  };
-}
 export interface Client {
   age: string;
-  bookings: {
-    history: BookingObject[];
-    ongoing: BookingObject[];
-  };
   docId: string;
   email: string;
   id?: string;
@@ -51,7 +27,8 @@ export interface Client {
   name: string;
   password: string;
   userType: string;
-  creditCards: CreditCard[];
+  phone: string;
+  bookedDocIds: [];
 }
 
 export interface ClientSliceState {
@@ -60,10 +37,6 @@ export interface ClientSliceState {
 
 export interface PetCareProvider {
   age: string;
-  bookings: {
-    history: any[];
-    ongoing: any;
-  };
   docId: string;
   email: string;
   id?: string;
@@ -71,21 +44,12 @@ export interface PetCareProvider {
   name: string;
   password: string;
   userType: string;
-}
-
-export interface CreditCard {
-  number: string;
-  expiry: string;
-  cvc: string;
-  name: string;
-  focus: any;
-  id: any;
+  phone: string;
+  bookedDocIds: [];
 }
 
 export interface PetService {
   docId: string;
-  history: any[];
-  ongoing: any[];
   imgLink: string;
   providerInfo: {
     docId: string;
@@ -103,6 +67,78 @@ export interface PetService {
 
 export interface PetServiceInitialState {
   value: PetService[];
+}
+
+export interface Scheduling {
+  day: string;
+  time: string;
+  clientBookingId: string;
+  serviceBookingId: string;
+}
+
+export interface Bookings {
+  clientDetails: {
+    clientName: string;
+    clientEmail: string;
+    clientImgUrl: string;
+    clientDocId: string;
+    clientBookingId: string;
+    clientPhoneNumber: string;
+  };
+  providerInfo: {
+    providerName: string;
+    providerEmail: string;
+    providerPhone: string;
+    providerDocId: string;
+    providerImgUrl: string;
+  };
+
+  bookingDetails: {
+    description: string;
+    longDescription: string;
+    price: string;
+    serviceName: string;
+    serviceProviderName: string;
+    imgUrl: string;
+    serviceDocId: string;
+    docId: string;
+  };
+  scheduling: Scheduling;
+  docId: string;
+}
+
+export interface BookingsSliceState {
+  bookings: Bookings[];
+}
+
+export interface SuccessPageProps {
+  clientDetails: {
+    clientName: string;
+    clientEmail: string;
+    clientImgUrl: string;
+    clientDocId: string;
+    clientBookingId: string;
+    clientPhoneNumber: string;
+  };
+  providerInfo: {
+    providerName: string;
+    providerEmail: string;
+    providerPhone: string;
+    providerDocId: string;
+    providerImgUrl: string;
+  };
+
+  bookingDetails: {
+    description: string;
+    longDescription: string;
+    price: string;
+    serviceName: string;
+    serviceProviderName: string;
+    imgUrl: string;
+    serviceDocId: string;
+    docId: string;
+  };
+  scheduling: Scheduling;
 }
 
 const fetchUserData = async (email: string | null | undefined) => {
@@ -140,40 +176,81 @@ const fetchUserData = async (email: string | null | undefined) => {
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [user] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth);
+  const [refreshing, setRefreshing] = useState(false);
   const [openNav, setOpenNav] = useState(false);
+  const [refreshInterval, setRefreshInterval] = useState<any>(null);
   const pathName = usePathname();
 
   useEffect(() => {
-    if (user?.email)
-      fetchUserData(user?.email).then((res) => store.dispatch(setUser(res)));
-  }, [user]);
+    if (user && user.emailVerified) {
+      if (!loading) {
+        user?.email &&
+          fetchUserData(user?.email).then((res) =>
+            store.dispatch(setUser(res))
+          );
+      }
+    }
+  }, [user, user?.emailVerified]);
 
+  useEffect(() => {
+    let interval: any;
+    if (!user?.emailVerified && user?.email) {
+      interval = setInterval(() => {
+        console.log("asd");
+        if (user?.email && !refreshing) {
+          if (user?.emailVerified === true) {
+            user.reload();
+            setRefreshing(false);
+          }
+          setRefreshing(true);
+          user.reload().then(() => {
+            setRefreshing(false);
+          });
+        }
+      }, 2000);
+      setRefreshInterval(interval);
+    } else {
+      clearInterval(refreshInterval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [user?.emailVerified, user]);
   return (
-    <Providers>
+    <>
+      <Toaster />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta charSet="utf-8" />
       <meta httpEquiv="Permissions-Policy" content="interest-cohort=()"></meta>
-      <Toaster />
 
-      <SideNav openNav={openNav} setOpenNav={setOpenNav} />
-      <div
-        className={` ${
-          (pathName === "/contact" && !user?.email) ||
-          pathName === "/" ||
-          pathName === "/gallery" ||
-          pathName === "/about" ||
-          pathName === "/login" ||
-          pathName === "/create/account"
-            ? ""
-            : openNav
-            ? ""
-            : "ml-64"
-        }`}
-      >
-        <Component {...pageProps} />
-      </div>
-    </Providers>
+      <React.Fragment>
+        <Providers>
+          <SideNav openNav={openNav} setOpenNav={setOpenNav} />
+          {/* <TopNav /> */}
+          {!user?.emailVerified && user?.email ? (
+            <VerifyEmail />
+          ) : (
+            <div
+              className={` ${
+                (pathName === "/contact" && !user?.email) ||
+                pathName === "/" ||
+                pathName === "/gallery" ||
+                pathName === "/about" ||
+                pathName === "/login" ||
+                pathName === "/create/account"
+                  ? ""
+                  : openNav
+                  ? ""
+                  : "ml-0 md:ml-64"
+              }`}
+            >
+              <Component {...pageProps} />
+            </div>
+          )}
+        </Providers>
+      </React.Fragment>
+    </>
   );
 }
 

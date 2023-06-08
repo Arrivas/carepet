@@ -68,7 +68,7 @@ const LandingPage = () => {
                       <div className="home-container1">
                         <img
                           alt="image"
-                          src="./hero/playground_asset/logo2.png"
+                          src="./hero/playground_assets/logo2.png"
                           className="home-image"
                         />
                         <div

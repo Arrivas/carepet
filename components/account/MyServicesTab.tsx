@@ -124,8 +124,6 @@ const MyServicesTab = () => {
         docId: user.docId,
       },
       imgLink: selectedService?.imgLink,
-      history: selectedService?.history,
-      ongoing: selectedService?.ongoing,
       docId: selectedService?.docId,
     };
     dispatch(setLoading(true));

@@ -8,6 +8,7 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  getDocs,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -55,36 +56,34 @@ const MyServicesTab = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const fetchServices = async () => {
-  //     try {
-  //       const q = query(
-  //         collection(firestore, "petServices"),
-  //         where("providerInfo.docId", "==", user?.docId)
-  //       );
+  const fetchServices = async () => {
+    try {
+      const q = query(
+        collection(firestore, "petServices"),
+        where("providerInfo.providerDocId", "==", user?.docId)
+      );
 
-  //       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //         const results: any = [];
-  //         querySnapshot.forEach((doc) => {
-  //           results.push(doc.data());
-  //         });
+      const querySnapshot = await getDocs(q);
+      const results: any = [];
+      querySnapshot.forEach((doc) => {
+        results.push(doc.data());
+      });
 
-  //         dispatch(setPetServices(results));
-  //       });
+      return results;
+    } catch (error) {
+      console.error("Error fetching pet services:", error);
+    }
+  };
 
-  //       return unsubscribe;
-  //     } catch (error) {
-  //       console.error("Error fetching pet service:", error);
-  //       return null;
-  //     }
-  //   };
-
-  //   const unsubscribe = fetchServices();
-
-  //   return () => {
-  //     unsubscribe;
-  //   };
-  // }, []);
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetchServices().then((res) => dispatch(setPetServices(res)));
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -119,9 +118,9 @@ const MyServicesTab = () => {
         price: values.price,
       },
       providerInfo: {
-        name: user.name,
-        email: user.email,
-        docId: user.docId,
+        providerName: user.name,
+        providerEmail: user.email,
+        providerDocId: user.docId,
       },
       imgLink: selectedService?.imgLink,
       docId: selectedService?.docId,
@@ -164,12 +163,13 @@ const MyServicesTab = () => {
     }
     dispatch(setLoading(false));
   };
+
   return (
     <>
       <div className="flex">
         <div className="flex-1">
           <ul>
-            {petServices.map((item) => (
+            {petServices?.map((item) => (
               <li
                 onClick={() => setSelectedService(item)}
                 className={`py-2 px-2 hover:text-white hover:bg-green-550 cursor-pointer ${

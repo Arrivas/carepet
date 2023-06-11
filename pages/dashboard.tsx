@@ -98,7 +98,7 @@ const dashboard = () => {
               onChange={(e) => setSearch(e.target.value)}
               type="search"
               id="default-search"
-              className="block w-full p-4 pl-10 text-sm  focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-4 pl-10 text-sm  focus:ring-blue-500 focus:border-blue-500"
               placeholder="Search Pet Service..."
             />
           </div>

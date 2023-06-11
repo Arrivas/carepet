@@ -6,16 +6,12 @@ import {
   getDoc,
   updateDoc,
   addDoc,
-  arrayUnion,
-  setDoc,
   QuerySnapshot,
   DocumentData,
   onSnapshot,
   query,
-  where,
   orderBy,
   limit,
-  serverTimestamp,
 } from "firebase/firestore";
 import { firestore } from "../../../config/firebase";
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from "next";
@@ -23,6 +19,7 @@ import { IoSend } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useRouter } from "next/router";
+import { HiArrowSmLeft } from "react-icons/hi";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const querySnapshot = await getDocs(collection(firestore, "messages"));
@@ -79,6 +76,18 @@ const MessagesRoom = () => {
     const messagesRef = collection(firestore, "messages");
     // @ts-ignore
     const messageDocRef = doc(messagesRef, chatId);
+    // update seen
+    if (user.userType === "Client")
+      await updateDoc(messageDocRef, {
+        clientSeen: true,
+        serviceProviderSeen: false,
+      });
+    else {
+      await updateDoc(messageDocRef, {
+        clientSeen: false,
+        serviceProviderSeen: true,
+      });
+    }
     const chatsCollectionRef = collection(messageDocRef, "chats");
     await addDoc(chatsCollectionRef, newChat);
     scrollChat.current &&
@@ -88,6 +97,7 @@ const MessagesRoom = () => {
 
   const fetchChatDetails = async () => {
     const messagesRef = collection(firestore, "messages");
+
     try {
       // @ts-ignore
       const messageDocRef = doc(messagesRef, chatId);
@@ -104,10 +114,24 @@ const MessagesRoom = () => {
     }
   };
 
+  const setSeen = async (messageDocRef: any) => {
+    if (user.userType === "Client")
+      await updateDoc(messageDocRef, {
+        clientSeen: true,
+      });
+    else {
+      await updateDoc(messageDocRef, {
+        serviceProviderSeen: true,
+      });
+    }
+  };
+
   useEffect(() => {
     const messagesRef = collection(firestore, "messages");
     // @ts-ignore
     const messageDocRef = doc(messagesRef, chatId);
+
+    setSeen(messageDocRef).then((res) => console.log(res));
 
     const chatsCollectionRef = collection(messageDocRef, "chats");
 
@@ -118,11 +142,11 @@ const MessagesRoom = () => {
     );
 
     fetchChatDetails().then((res) => setChatDetails(res as any));
-    const unsubscribe = onSnapshot(
+    const unsubscribe: any = onSnapshot(
       queryString,
       (querySnapshot: QuerySnapshot<DocumentData>) => {
         const chats: any = [];
-        querySnapshot.forEach((doc: any) => {
+        querySnapshot.forEach((doc) => {
           chats.push(doc.data());
         });
 
@@ -137,45 +161,66 @@ const MessagesRoom = () => {
 
   return (
     <>
-      <div className="flex flex-col min-w-[667px] mx-auto h-screen font-Nunito">
-        <div className="flex items-center gap-2 p-4 border-b border-gray-50 shadow-sm">
-          <img
-            src={
-              user?.userType === "Client"
-                ? chatDetails?.providerImgUrl
-                : chatDetails?.clientInfo?.clientImgUrl
-            }
-            className="h-[40px] w-[40px] rounded-full"
-          />
-          <h4 className="font-bold">
-            {user?.userType === "Client"
-              ? chatDetails?.providerName
-              : chatDetails?.clientInfo?.clientName}
-          </h4>
+      <title>
+        {user?.userType === "Client"
+          ? chatDetails?.providerName
+          : chatDetails?.clientInfo?.clientName}
+      </title>
+      <div className="flex flex-col  mx-auto h-screen font-Nunito">
+        <div className="flex flex-col p-2 px-4 border-b border-gray-50 shadow-sm">
+          <button
+            onClick={() => router.back()}
+            className="flex text-xs items-center text-[#bebebe]"
+          >
+            <HiArrowSmLeft size={25} color="#bebebe" />
+            go back
+          </button>
+          <div className="flex items-center gap-2 ">
+            <img
+              src={
+                user?.userType === "Client"
+                  ? chatDetails?.providerImgUrl
+                  : chatDetails?.clientInfo?.clientImgUrl
+              }
+              className="h-[40px] w-[40px] rounded-full"
+            />
+            <h4 className="font-bold">
+              {user?.userType === "Client"
+                ? chatDetails?.providerName
+                : chatDetails?.clientInfo?.clientName}
+            </h4>
+          </div>
         </div>
         <div className="flex-grow overflow-y-auto p-5">
           <div className="flex flex-col">
-            {chats?.map((item, index: number) => {
-              const isFirst = index === 0;
-              const isLast = index === chats.length - 1;
+            {chats?.length === 0 ? (
+              <div className="flex justify-center">
+                <span className="text-gray-300 italic">
+                  start a conversation
+                </span>
+              </div>
+            ) : (
+              chats?.map((item, index: number) => {
+                const isFirst = index === 0;
+                const isLast = index === chats.length - 1;
+                const isClient = user.userType === item.from;
 
-              const isClient = user.userType === item.from;
+                const customClassName = isClient
+                  ? "self-end bg-[#646464] p-2 text-white"
+                  : "self-start bg-[#e8e4ec] p-2 text-black";
 
-              const customClassName = isClient
-                ? "self-end bg-[#646464] p-2 text-white"
-                : "self-start bg-[#e8e4ec] p-2 text-black";
-
-              return (
-                <p
-                  key={item.timeStamp}
-                  className={`rounded-full my-[2px] ${
-                    isClient ? "pl-4 pr-3" : "pl-3 pr-4"
-                  }  ${customClassName}`}
-                >
-                  {item.message}
-                </p>
-              );
-            })}
+                return (
+                  <p
+                    key={item.timeStamp}
+                    className={`rounded-full my-[2px] ${
+                      isClient ? `pl-4 pr-3 ` : "pl-3 pr-4"
+                    }  ${customClassName}`}
+                  >
+                    {item.message}
+                  </p>
+                );
+              })
+            )}
             <div ref={scrollChat}></div>
           </div>
         </div>

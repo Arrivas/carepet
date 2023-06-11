@@ -17,6 +17,7 @@ import "../styles/main.custom.css";
 import "../styles/main.homeStyle.css";
 import React from "react";
 import VerifyEmail from "../components/VerifyEmail";
+import NavigationLoader from "../components/NavigationLoader";
 
 export interface Client {
   age: string;
@@ -52,9 +53,9 @@ export interface PetService {
   docId: string;
   imgLink: string;
   providerInfo: {
-    docId: string;
-    email: string;
-    name: string;
+    providerDocId: string;
+    providerEmail: string;
+    providerName: string;
   };
   service: {
     description: string;
@@ -105,6 +106,10 @@ export interface Bookings {
   };
   scheduling: Scheduling;
   docId: string;
+  status: string;
+  cancellationDateTime?: any;
+  paymentImgUrl?: string;
+  dateTimeCompletion?: any;
 }
 
 export interface BookingsSliceState {
@@ -245,6 +250,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   : "ml-0 md:ml-64"
               }`}
             >
+              <NavigationLoader />
               <Component {...pageProps} />
             </div>
           )}

@@ -21,35 +21,35 @@ import ChatLitsItem from "../components/chat/ChatLitsItem";
 import { setLoading } from "../store/loadingSlice";
 import Loading from "../components/Loading";
 
-const fetchMessages = async (refIds: string[]) => {
-  if (!refIds || refIds.length === 0) {
-    return [];
-  }
-
-  const messagesCollectionRef = collection(firestore, "messages");
-  const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
-  const messages: any[] = [];
-
-  messagesQuerySnapshot.forEach((messageDoc) => {
-    if (refIds.includes(messageDoc.id)) {
-      messages.push({ ...messageDoc.data(), messagesDocId: messageDoc.id });
-    }
-  });
-
-  return messages;
-};
-
 const messages = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const loading = useSelector((state: RootState) => state.loading.loading);
   const [messages, setMessages] = useState<any>([]);
   const dispatch = useDispatch();
 
+  const fetchMessages = (refIds: string[]) => {
+    const messagesCollectionRef = collection(firestore, "messages");
+
+    const unsubscribe = onSnapshot(messagesCollectionRef, (querySnapshot) => {
+      const messages: any[] = [];
+
+      querySnapshot.forEach((messageDoc) => {
+        if (refIds?.includes(messageDoc.id)) {
+          messages.push({ ...messageDoc.data(), messagesDocId: messageDoc.id });
+        }
+      });
+
+      setMessages(messages);
+    });
+
+    return () => unsubscribe();
+  };
+
   useEffect(() => {
     let isMounted = true;
     dispatch(setLoading(true));
     if (isMounted) {
-      fetchMessages(user?.bookedDocIds).then((res) => setMessages(res));
+      fetchMessages(user?.bookedDocIds);
       dispatch(setLoading(false));
     }
 
@@ -60,6 +60,7 @@ const messages = () => {
 
   return (
     <>
+      <title>Messages</title>
       <div className="font-Nunito p-5">
         <h1 className="font-bold text-[2rem] text-gray-600">Messages</h1>
         <div className="flex flex-col gap-2 my-5 max-h-[85vh] overflow-y-auto">

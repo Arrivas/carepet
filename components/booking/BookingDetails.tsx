@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { formatAsCurrency } from "../../functions/formatAsCurrency";
-import Cards from "react-credit-cards-2";
 import DatePicker from "react-datepicker";
-import { setHours, setMinutes } from "date-fns";
 import { useRouter } from "next/navigation";
+import { HiOutlineCalendar, HiOutlineClock } from "react-icons/hi2";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import Spinner from "../Spinner";
 
 interface BookingDetailsProps {
   petServiceData: any;
@@ -13,7 +15,7 @@ interface BookingDetailsProps {
   setSelectedDay: React.Dispatch<React.SetStateAction<Date>>;
   selectedTime: Date;
   setSelectedTime: React.Dispatch<React.SetStateAction<Date>>;
-  disableTimes: string[];
+  scheduling: any;
 }
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
@@ -24,7 +26,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   setSelectedDay,
   selectedTime,
   setSelectedTime,
-  disableTimes,
+  scheduling,
 }) => {
   const { docId, imgLink, providerInfo, service } = petServiceData;
   const {
@@ -35,13 +37,20 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     serviceProviderName,
   } = service;
   const router = useRouter();
-  const minTime = new Date();
-  minTime.setHours(8, 0, 0);
+  const loading = useSelector((state: RootState) => state.loading.loading);
+  // const minTime = new Date();
+  // minTime.setHours(8, 0, 0);
 
-  const maxTime = new Date();
-  maxTime.setHours(17, 0, 0);
-
-  const sampleDate = new Date(2023, 5, 8);
+  // const maxTime = new Date();
+  // maxTime.setHours(17, 0, 0);
+  const sampleDate = new Date(2023, 5, 11);
+  const dateArray = scheduling.map((sched: any) => {
+    const date = new Date(sched.day);
+    return new Date(
+      `${date.getFullYear()}, ${date.getMonth()}, ${date.getDate()}`
+    );
+  });
+  const disableTimes = scheduling.map((booking: any) => booking.time);
   return (
     <>
       {serviceName ? (
@@ -90,45 +99,53 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 {user?.userType === "Client" && (
                   <>
                     <h3 className="my-5">Scheduling</h3>
-                    <div className="flex flex-row items-center">
-                      <div>
-                        <span className="text-gray-400">select day</span>
+                    <div className="flex flex-row items-center gap-1">
+                      <div className="relative flex items-center justify-center cursor-pointer">
+                        <HiOutlineCalendar className="absolute left-1 z-50" />
                         <DatePicker
+                          showIcon
                           selected={selectedDay}
                           onChange={(date) => setSelectedDay(date as Date)}
                           minDate={new Date()}
-                          isClearable
-                          placeholderText="I have been cleared!"
+                          placeholderText="Select Day"
+                          className="p-2 border rounded-md cursor-pointer"
                         />
                       </div>
-                      <div>
-                        <span className="text-gray-400">select time</span>
+                      <div className="relative flex items-center justify-center cursor-pointer">
+                        <HiOutlineClock className="absolute left-1 z-50" />
                         <DatePicker
-                          isClearable
+                          timeInputLabel="Select Time"
+                          showIcon
+                          className="p-2 border rounded-md cursor-pointer"
                           selected={selectedTime}
-                          onChange={(date) => setSelectedTime(date as Date)}
-                          minTime={minTime}
-                          maxTime={maxTime}
+                          onChange={(date) =>
+                            setSelectedTime(new Date(date as Date))
+                          }
                           showTimeSelect
                           showTimeSelectOnly
                           timeIntervals={15}
                           timeCaption="Time"
                           dateFormat="h:mm aa"
-                          excludeTimes={disableTimes.map((time) => {
-                            const newTime = time
-                              .trim()
-                              .replace(/\s?[AP]M$/i, "");
-                            const [hours, minutes] = newTime.split(":");
-                            const disabledTime = new Date(selectedDay!);
-                            disabledTime.setHours(
-                              Number(hours),
-                              Number(minutes),
-                              0
-                            );
-                            return selectedDay.getDay() === sampleDate.getDay()
-                              ? disabledTime
-                              : new Date();
-                          })}
+                          excludeTimes={disableTimes
+                            .flatMap((time: any) => {
+                              const newTime = time
+                                .trim()
+                                .replace(/\s?[AP]M$/i, "");
+                              const [hours, minutes] = newTime.split(":");
+                              const disabledTime = new Date(selectedDay!);
+                              disabledTime.setHours(
+                                Number(hours),
+                                Number(minutes),
+                                0
+                              );
+                              return dateArray.map((date: any) => {
+                                return date.getDate() === selectedDay.getDate()
+                                  ? disabledTime
+                                  : new Date();
+                              });
+                            })
+                            .filter((time: any) => time !== null)}
+                          placeholderText="Select Time"
                         />
                       </div>
                     </div>
@@ -146,11 +163,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   Go Back
                 </button>
                 <button
-                  onClick={handleBook}
+                  disabled={loading}
+                  onClick={() => handleBook(docId)}
                   type="button"
-                  className="w-full py-2 font-medium text-white bg-green-550 rounded hover:bg-green-600"
+                  className="flex flex-row items-center justify-center w-full py-2 font-medium text-white bg-green-550 rounded hover:bg-green-600"
                 >
                   Book Now
+                  {loading && <Spinner />}
                 </button>
               </div>
             )}

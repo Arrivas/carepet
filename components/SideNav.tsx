@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDashboard, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { BsImage, BsMegaphone, BsCardChecklist } from "react-icons/bs";
 import { AiOutlineUser, AiFillWechat } from "react-icons/ai";
@@ -11,6 +11,16 @@ import { RootState } from "../store";
 import { auth } from "../config/firebase";
 import { usePathname, useRouter } from "next/navigation";
 import { setUser } from "../store/userSlice";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  limit,
+  query,
+  where,
+  FieldPath,
+} from "firebase/firestore";
+import { firestore } from "../config/firebase";
 
 interface SideNavProps {
   openNav?: boolean;
@@ -49,7 +59,7 @@ const navItems = [
     route: "/newService",
   },
   {
-    id: 5,
+    id: 6,
     label: "Messages",
     icon: <BiMessageDetail color="#fff" size={25} />,
     route: "/messages",
@@ -64,12 +74,44 @@ const navItems = [
 
 const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
   const user = useSelector((state: RootState) => state.user.user);
+  const [messageCount, setMessageCount] = useState(0);
   const router = useRouter();
   const dispatch = useDispatch();
   const pathName = usePathname();
 
+  const fetchChatDetails = () => {
+    if (user?.bookedDocIds === undefined) return;
+    const messagesRef = collection(firestore, "messages");
+
+    try {
+      const msgQuery = query(
+        messagesRef,
+        where(
+          user?.userType === "Client" ? "clientSeen" : "serviceProviderSeen",
+          "==",
+          false
+        ),
+        where("__name__", "in", user?.bookedDocIds)
+      );
+
+      const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+        const results: any = [];
+        querySnapshot.forEach((doc) => {
+          results.push(doc.data());
+        });
+
+        setMessageCount(results?.length);
+      });
+
+      return unsubscribe;
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
+      fetchChatDetails();
       document.addEventListener("DOMContentLoaded", function () {
         const toggleButton = document.querySelector(
           '[data-drawer-toggle="logo-sidebar"]'
@@ -91,7 +133,7 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
             <aside
               id="logo-sidebar"
               aria-labelledby="logo-sidebar"
-              className={`fixed top-0 font-Nunito left-0 z-40 w-64 ${
+              className={`fixed top-0 font-Nunito left-0 z-[999] w-64 ${
                 openNav
                   ? "-translate-x-full"
                   : "md:translate-x-0 -translate-x-full"
@@ -142,8 +184,12 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
                               {item.label}
                             </span>
                           </div>
-                          {item.label === "Messages" && (
-                            <span className="min-h-[10px] min-w-[10px] rounded-full"></span>
+                          {item.label === "Messages" && messageCount !== 0 && (
+                            <span className="min-h-[8px] min-w-[20px] flex items-center justify-center rounded-md text-xs text-gray-100 font-bold bg-red-400 p-1 px-2">
+                              {user?.userType === "Client"
+                                ? messageCount
+                                : messageCount}
+                            </span>
                           )}
                         </Link>
                       </li>

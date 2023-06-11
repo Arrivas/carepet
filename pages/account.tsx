@@ -17,7 +17,6 @@ import { setLoading } from "../store/loadingSlice";
 import ProfileTab from "../components/account/ProfileTab";
 import MyServicesTab from "../components/account/MyServicesTab";
 import BookingsTab from "../components/account/BookingsTab";
-import { firestore } from "../config/firebase";
 
 let sideAccountTabItems = [
   { id: 1, title: "My Profile" },

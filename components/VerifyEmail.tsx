@@ -5,8 +5,10 @@ import { auth } from "../config/firebase";
 import { setUser } from "../store/userSlice";
 import { useRouter } from "next/navigation";
 import { useSendEmailVerification } from "react-firebase-hooks/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-const VerifyEmail = ({ userState }: any) => {
+const VerifyEmail = () => {
+  const [user] = useAuthState(auth);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isSecondTime, setIsSecondTime] = useState(false);
   const [displayMessage, setDisplayMessage] = useState(false);
@@ -56,36 +58,24 @@ const VerifyEmail = ({ userState }: any) => {
             />
             <div>
               <p>verify your email first before proceeding</p>
-              <p className="font-bold">{userState?.email}</p>
-              {timeLeft === null ? (
-                <button
-                  onClick={onSendEmailVerification}
-                  type="button"
-                  className="w-full py-2 font-bold mt-3 text-white bg-green-550 rounded hover:bg-green-600"
-                >
-                  send verification
-                </button>
-              ) : (
-                <></>
-              )}
+              <p className="font-bold">{user?.email}</p>
             </div>
 
             <div>
               {timeLeft === null ? (
                 <div className="w-[80%]">
                   <button
-                    className="px-5 py-[14px] items-center rounded-md flex-row justify-center"
+                    type="button"
+                    className="w-full py-2 font-bold mt-3 text-white bg-green-550 rounded hover:bg-green-600"
                     style={{
                       backgroundColor: "primary",
                     }}
                     onClick={() => {
-                      sendEmailVerification();
+                      onSendEmailVerification();
                       // setIsEmailVerified(true);
                     }}
                   >
-                    <span className="text-gray-50 font-bold">
-                      {isSecondTime ? "re-send" : "send"} verification
-                    </span>
+                    {isSecondTime ? "re-send" : "send"} verification
                   </button>
                 </div>
               ) : (

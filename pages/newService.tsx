@@ -73,7 +73,7 @@ const newService = () => {
         providerName: user.name,
         providerEmail: user.email,
         providerDocId: user.docId,
-        providerPhone: user.phone,
+        providerPhone: user?.phone,
         providerImgUrl: user.imgUrl,
       },
       imgLink: "",
@@ -110,6 +110,7 @@ const newService = () => {
       dispatch(addPetService(newService));
       toast.success("New service uploaded successfully!");
     } catch (error) {
+      console.log(error);
       toast.error("Error uploading service");
     }
     dispatch(setLoading(false));

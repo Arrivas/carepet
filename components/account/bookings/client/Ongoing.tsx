@@ -345,8 +345,11 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
               item.status === "ongoing" ||
               item.status === "paymentSubmitted" ||
               item.status === "paymentRejected"
-            )
-              return item;
+            ) {
+              // @ts-ignore
+              return user?.bookedDocIds.includes(item?.docId);
+            }
+            return false;
           })
           .map((item) => {
             const {

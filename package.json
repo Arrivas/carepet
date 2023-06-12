@@ -31,6 +31,7 @@
     "react-image-gallery": "^1.2.11",
     "react-redux": "^8.0.7",
     "react-responsive-masonry": "^2.1.7",
+    "recharts": "^2.6.2",
     "redux": "^4.2.1",
     "typewriter-effect": "^2.20.1",
     "yup": "^1.2.0"

@@ -222,12 +222,6 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
     clientDocId: string,
     clientBookingDocId: string
   ) => {
-    console.log(
-      petCareProviderDocId,
-      petCareBookingDocId,
-      clientDocId,
-      clientBookingDocId
-    );
     try {
       const clientRef = doc(firestore, "client", clientDocId);
       const petCareProviderRef = doc(

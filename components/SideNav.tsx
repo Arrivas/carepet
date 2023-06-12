@@ -41,12 +41,6 @@ const navItems = [
     route: "/account",
   },
   {
-    id: 3,
-    label: "Contact Us",
-    icon: <MdAlternateEmail color="#fff" size={25} />,
-    route: "/contact",
-  },
-  {
     id: 4,
     label: "Gallery",
     icon: <BsImage color="#fff" size={25} />,

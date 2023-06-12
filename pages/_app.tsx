@@ -243,7 +243,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           ) : (
             <div
               className={` ${
-                (pathName === "/contact" && !user?.email) ||
                 pathName === "/" ||
                 pathName === "/gallery" ||
                 pathName === "/about" ||

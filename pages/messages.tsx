@@ -1,22 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import {
-  collection,
-  query,
-  onSnapshot,
-  getDocs,
-  doc,
-  updateDoc,
-  getFirestore,
-  where,
-  QuerySnapshot,
-  DocumentData,
-  orderBy,
-  limit,
-} from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { firestore } from "../config/firebase";
-import { setBookings } from "../store/bookingsSlice";
 import ChatLitsItem from "../components/chat/ChatLitsItem";
 import { setLoading } from "../store/loadingSlice";
 import Loading from "../components/Loading";

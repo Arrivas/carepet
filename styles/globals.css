@@ -18,6 +18,10 @@
   display: none;
 }
 
+.recharts-wrapper > div {
+  margin: 0 auto;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

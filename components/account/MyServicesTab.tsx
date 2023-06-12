@@ -192,7 +192,7 @@ const MyServicesTab = () => {
                   initialValues={initialValues}
                   onSubmit={handleSubmit}
                 >
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 flex-grow">
                     <AppFormField
                       placeholder="Service Provider Name"
                       name="serviceProviderName"

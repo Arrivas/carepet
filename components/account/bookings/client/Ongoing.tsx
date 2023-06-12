@@ -48,7 +48,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
     const userBookingsRef = collection(firestore, getCollection);
     // @ts-ignore
     const bookingsDocRef = doc(userBookingsRef, user?.docId);
-
+    if (user?.bookedDocIds?.length === 0) return;
     const chatsCollectionRef =
       user?.userType === "Client"
         ? query(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatAsCurrency } from "../../../../functions/formatAsCurrency";
@@ -15,11 +15,13 @@ import {
   where,
 } from "firebase/firestore";
 import { setBookings } from "../../../../store/bookingsSlice";
+import HistoryModal from "../../history/HistoryModal";
 
 const History = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const bookings = useSelector((state: RootState) => state.bookings.bookings);
   const dispatch = useDispatch();
+  const [isRateOpen, setIsRateOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const getCollection =
@@ -137,9 +139,24 @@ const History = () => {
                     </div>
                   </div>
                 </div>
+                {/* <div className="h-full w-full my-2 flex flex-row gap-2 justify-end ">
+                  <button
+                    onClick={() => setIsRateOpen(!isRateOpen)}
+                    className="text-white flex items-center flex-row bg-yellow-300 hover:bg-yellow-400 px-5 py-3 rounded-md"
+                  >
+                    Rate
+                  </button>
+                </div> */}
 
                 {/* spearator */}
                 <div className="w-full h-[1px] my-5 bg-gray-200" />
+                {/* 
+                <HistoryModal
+                  isOpen={isRateOpen}
+                  setIsOpen={setIsRateOpen}
+                  clientBookingId={clientBookingId}
+                  user={user}
+                /> */}
               </div>
             );
           })}

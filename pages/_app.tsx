@@ -18,6 +18,7 @@ import "../styles/main.homeStyle.css";
 import React from "react";
 import VerifyEmail from "../components/VerifyEmail";
 import NavigationLoader from "../components/NavigationLoader";
+import "rc-rate/assets/index.css";
 
 export interface Client {
   age: string;
@@ -110,10 +111,14 @@ export interface Bookings {
   cancellationDateTime?: any;
   paymentImgUrl?: string;
   dateTimeCompletion?: any;
+  isRated?: boolean;
 }
 
 export interface BookingsSliceState {
   bookings: Bookings[];
+}
+export interface ClientBookingsSliceState {
+  clientBookings: Bookings[];
 }
 
 export interface SuccessPageProps {

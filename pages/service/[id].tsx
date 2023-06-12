@@ -141,8 +141,12 @@ const PetServiceDetails = ({ petServiceData }: any) => {
         serviceBookingId: "",
       },
       status: "pendingPayment",
+      isRated: false,
     };
+    // @ts-ignore
+    if (typeof selectedTime === "number") return toast.error("select time");
     dispatch(setLoading(true));
+
     const isCurrentlyBooked = await searchBookingByServiceId(
       user?.docId,
       currentServiceId
@@ -197,7 +201,6 @@ const PetServiceDetails = ({ petServiceData }: any) => {
       });
 
       // service
-
       const petCareProviderRef = doc(
         firestore,
         "petCareProvider",

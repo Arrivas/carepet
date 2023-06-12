@@ -13,15 +13,21 @@ import {
   onSnapshot,
   query,
   where,
+  updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 import { setBookings } from "../../../../store/bookingsSlice";
 import HistoryModal from "../../history/HistoryModal";
+import { toast } from "react-hot-toast";
 
 const History = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const bookings = useSelector((state: RootState) => state.bookings.bookings);
   const dispatch = useDispatch();
   const [isRateOpen, setIsRateOpen] = useState<boolean>(false);
+  const [selectedBooking, setSelectedBooking] = useState<any>({});
+  const [selectedRate, setSelectedRate] = useState(1);
+  const [descriptionText, setDescriptionText] = useState<string>("");
 
   useEffect(() => {
     const getCollection =
@@ -51,6 +57,40 @@ const History = () => {
     };
   }, []);
 
+  const handleSubmitRate = async () => {
+    const bookingRef = doc(
+      collection(
+        firestore,
+        "client",
+        selectedBooking?.clientDetails?.clientDocId,
+        "bookings"
+      ),
+      selectedBooking?.clientDetails?.clientBookingId
+    );
+    const newRate = {
+      imgUrl: user?.imgUrl,
+      userName: user?.name,
+      rate: selectedRate,
+      descriptionText: descriptionText.trim(),
+    };
+    if (selectedRate === 0) return toast.error("rate cannot go below 1 star");
+    const petServiceRef = doc(
+      collection(firestore, "petServices"),
+      selectedBooking?.bookingDetails?.serviceDocId
+    );
+    try {
+      // @ts-ignore
+      await updateDoc(bookingRef, { isRated: true, rate: selectedRate });
+      await updateDoc(petServiceRef, {
+        ratings: arrayUnion(newRate),
+      });
+      setIsRateOpen(false);
+      toast.success("rating added successfully");
+    } catch (error) {
+      console.error("Error updating booking:", error);
+    }
+  };
+
   return (
     <>
       <div className="overflow-y-auto max-h-[99%]">
@@ -69,6 +109,7 @@ const History = () => {
               status,
               cancellationDateTime,
               dateTimeCompletion,
+              isRated,
             } = item;
 
             const { clientDocId, clientBookingId } = clientDetails;
@@ -139,28 +180,39 @@ const History = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="h-full w-full my-2 flex flex-row gap-2 justify-end ">
-                  <button
-                    onClick={() => setIsRateOpen(!isRateOpen)}
-                    className="text-white flex items-center flex-row bg-yellow-300 hover:bg-yellow-400 px-5 py-3 rounded-md"
-                  >
-                    Rate
-                  </button>
-                </div> */}
+                {!isRated && (
+                  <div className="h-full w-full my-2 flex flex-row gap-2 justify-end ">
+                    <button
+                      onClick={() => {
+                        console.log(item);
+                        setSelectedBooking(item);
+                        setIsRateOpen(!isRateOpen);
+                      }}
+                      className="text-white flex items-center flex-row bg-yellow-300 hover:bg-yellow-400 px-5 py-3 rounded-md"
+                    >
+                      Rate
+                    </button>
+                  </div>
+                )}
 
                 {/* spearator */}
                 <div className="w-full h-[1px] my-5 bg-gray-200" />
-                {/* 
-                <HistoryModal
-                  isOpen={isRateOpen}
-                  setIsOpen={setIsRateOpen}
-                  clientBookingId={clientBookingId}
-                  user={user}
-                /> */}
               </div>
             );
           })}
       </div>
+      <HistoryModal
+        descriptionText={descriptionText}
+        setDescriptionText={setDescriptionText}
+        handleSubmitRate={handleSubmitRate}
+        selectedRate={selectedRate}
+        setSelectedRate={setSelectedRate}
+        bookingDetails={selectedBooking?.bookingDetails}
+        isOpen={isRateOpen}
+        setIsOpen={setIsRateOpen}
+        clientDetails={selectedBooking?.clientDetails}
+        user={user}
+      />
     </>
   );
 };

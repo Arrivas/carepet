@@ -79,6 +79,7 @@ const newService = () => {
       imgLink: "",
       docId: "",
       scheduling: [],
+      ratings: [],
     };
     if (user?.phone === undefined || user?.phone === "") {
       toast.error("add your phone number first");

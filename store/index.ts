@@ -3,12 +3,14 @@ import userReducer from "./userSlice";
 import loadingReducer from "./loadingSlice";
 import petServicesReducer from "./petServicesSlice";
 import bookingsReducer from "./bookingsSlice";
+import clientBookingsReducer from "./clientBookingsSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
   loading: loadingReducer,
   petServices: petServicesReducer,
   bookings: bookingsReducer,
+  clientBookings: clientBookingsReducer,
 });
 
 export const store = configureStore({
@@ -17,6 +19,7 @@ export const store = configureStore({
     loading: loadingReducer,
     petServices: petServicesReducer,
     bookings: bookingsReducer,
+    clientBookings: clientBookingsReducer,
     // petServices: apartmentsReducer,
     // booking: bookingReducer,
   },

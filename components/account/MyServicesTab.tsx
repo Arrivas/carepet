@@ -186,13 +186,13 @@ const MyServicesTab = () => {
         </div>
         <div className="flex-[3]">
           {selectedService !== undefined && (
-            <div className="flex items-center justify-end">
-              <div className="overflow-y-auto h-[550px] no-scrollbar xs:h-screen w-[90%] font-roboto relative px-2 xs:px-5">
+            <div className="flex items-center justify-end overflow-y-auto ">
+              <div className="overflow-y-auto  no-scrollbar xs:h-screen w-[90%] font-roboto relative px-2 xs:px-5">
                 <FormikField
                   initialValues={initialValues}
                   onSubmit={handleSubmit}
                 >
-                  <div className="flex flex-col space-y-2 flex-grow">
+                  <div className="flex flex-col space-y-2 h-[80vh]">
                     <AppFormField
                       placeholder="Service Provider Name"
                       name="serviceProviderName"
@@ -239,9 +239,9 @@ const MyServicesTab = () => {
                     >
                       PNG, JPG.
                     </p>
-                  </div>
-                  <div className="pb-5">
-                    <SubmitButton title="Save" disabled={loading} />
+                    <div className="pb-24">
+                      <SubmitButton title="Save" disabled={loading} />
+                    </div>
                   </div>
                 </FormikField>
               </div>

@@ -67,6 +67,7 @@ const CreateAccount = () => {
       userType: selectedUserType.label,
       imgUrl:
         "https://firebasestorage.googleapis.com/v0/b/carepet-16aea.appspot.com/o/user.webp?alt=media&token=6518df48-8968-4e3a-9925-9821c96b524f",
+      bookedDocIds: ["test"],
     };
 
     const collectionRef = collection(firestore, "mail");

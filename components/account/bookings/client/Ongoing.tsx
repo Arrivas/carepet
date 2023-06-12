@@ -48,26 +48,22 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
     const userBookingsRef = collection(firestore, getCollection);
     // @ts-ignore
     const bookingsDocRef = doc(userBookingsRef, user?.docId);
+    const statusArray = [
+      "pendingPayment",
+      "ongoing",
+      "paymentSubmitted",
+      "paymentRejected",
+    ];
     const chatsCollectionRef =
       user?.userType === "Client"
         ? query(
             collection(bookingsDocRef, "bookings"),
             where("__name__", "in", user?.bookedDocIds || []),
-            where("status", "in", [
-              "pendingPayment",
-              "ongoing",
-              "paymentSubmitted",
-              "paymentRejected",
-            ])
+            where("status", "in", statusArray)
           )
         : query(
             collection(bookingsDocRef, "bookings"),
-            where("status", "in", [
-              "pendingPayment",
-              "ongoing",
-              "paymentSubmitted",
-              "paymentRejected",
-            ])
+            where("status", "in", statusArray)
           );
 
     const unsubscribe = onSnapshot(

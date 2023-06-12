@@ -37,7 +37,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
       .required(),
   });
   return (
-    <div className="">
+    <div className="overflow-y-auto h-[85vh] .no-scrollbar">
       <FormikField
         initialValues={initialValues}
         onSubmit={handleSubmit}
@@ -59,10 +59,10 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
             />
           </div>
         </div>
-        <div>
+        <div className="overflow-y-auto ">
           <div className="w-full h-[1px] my-5 bg-gray-200 relative -bottom-0" />
           <h4 className="font-bold mb-3">Personal Information</h4>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 ">
             <div>
               <p className="font-semibold text-xs text-gray-400 mb-1">
                 Full name
@@ -86,7 +86,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
             ) : null}
             <SubmitButton
               disabled={loading}
-              containerClass="self-end w-[20%]"
+              containerClass="self-end w-[20%] mb-24"
               title="Save"
             />
           </div>

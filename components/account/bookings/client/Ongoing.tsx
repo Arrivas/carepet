@@ -41,6 +41,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState({});
 
   useEffect(() => {
     const getCollection =
@@ -425,7 +426,11 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                           <div className="flex justify-between w-full my-2">
                             <span>Payment Receipt</span>
                             <button
-                              onClick={() => setShowReceipt(true)}
+                              onClick={() => {
+                                setSelectedBooking(docId);
+                                if (selectedBooking === docId)
+                                  setShowReceipt(true);
+                              }}
                               className="underline text-blue-400"
                             >
                               Show Receipt

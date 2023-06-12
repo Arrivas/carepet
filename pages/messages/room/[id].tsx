@@ -21,23 +21,23 @@ import { RootState } from "../../../store";
 import { useRouter } from "next/router";
 import { HiArrowSmLeft } from "react-icons/hi";
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const querySnapshot = await getDocs(collection(firestore, "messages"));
-  const messages: any[] = [];
-  querySnapshot.forEach((doc) => messages.push(doc.data()));
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const querySnapshot = await getDocs(collection(firestore, "messages"));
+//   const messages: any[] = [];
+//   querySnapshot.forEach((doc) => messages.push(doc.data()));
 
-  // Map data to an array of path objects with params (id)
-  const paths = messages.map((item: any) => {
-    return {
-      params: { id: item.chatId },
-    };
-  });
+//   // Map data to an array of path objects with params (id)
+//   const paths = messages.map((item: any) => {
+//     return {
+//       params: { id: item.chatId },
+//     };
+//   });
 
-  return {
-    paths,
-    fallback: false,
-  };
-};
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// };
 
 export const getStaticProps: GetStaticProps = async (
   context: GetStaticPropsContext

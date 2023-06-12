@@ -41,7 +41,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState({});
+  const [selectedBooking, setSelectedBooking] = useState<any>({});
 
   useEffect(() => {
     const getCollection =
@@ -331,6 +331,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
     }
   };
 
+  console.log(selectedBooking);
   return (
     <>
       <div className="overflow-y-auto max-h-[99%]">
@@ -442,7 +443,9 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                     (user?.userType === "Client" &&
                       status === "paymentRejected") ? (
                       <button
-                        onClick={() => setIsOpen(true)}
+                        onClick={() => {
+                          setIsOpen(true);
+                        }}
                         className="text-white flex items-center flex-row bg-green-550 hover:bg-green-600 px-5 py-3 min-w-[120px] rounded-md"
                       >
                         Add Payment
@@ -527,27 +530,6 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
 
                   {/* separator */}
                   <div className="w-full h-[1px] my-5 bg-gray-200" />
-                  <ShowReceiptModal
-                    paymentImgUrl={paymentImgUrl}
-                    setShowReceipt={setShowReceipt}
-                    showReceipt={showReceipt}
-                  />
-                  <PaymentModal
-                    price={price}
-                    fileInputRef={fileInputRef}
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                    receiptImage={receiptImage}
-                    setReceiptImage={setReceiptImage}
-                    providerName={providerName}
-                    providerPhone={providerPhone}
-                    handleSubmit={handleAddPayment}
-                    clientDocId={clientDocId}
-                    clientBookingId={clientBookingId}
-                    providerDocId={providerDocId}
-                    serviceDocId={serviceDocId}
-                    docId={serviceBookingId}
-                  />
                 </div>
               );
             })
@@ -555,6 +537,27 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
           <></>
         )}
       </div>
+      <ShowReceiptModal
+        paymentImgUrl={selectedBooking?.paymentImgUrl}
+        setShowReceipt={setShowReceipt}
+        showReceipt={showReceipt}
+      />
+      <PaymentModal
+        price={selectedBooking?.bookingDetails?.price}
+        fileInputRef={fileInputRef}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        receiptImage={receiptImage}
+        setReceiptImage={setReceiptImage}
+        providerName={selectedBooking?.providerInfo?.providerName}
+        providerPhone={selectedBooking?.providerInfo?.providerPhone}
+        handleSubmit={handleAddPayment}
+        clientDocId={selectedBooking?.clientDetails?.clientDocId}
+        clientBookingId={selectedBooking?.clientDetails?.clientBookingId}
+        providerDocId={selectedBooking?.providerInfo?.providerDocId}
+        serviceDocId={selectedBooking?.bookingDetails?.serviceDocId}
+        docId={selectedBooking?.scheduling?.serviceBookingId}
+      />
     </>
   );
 };

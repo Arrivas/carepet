@@ -426,11 +426,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                           <div className="flex justify-between w-full my-2">
                             <span>Payment Receipt</span>
                             <button
-                              onClick={() => {
-                                setSelectedBooking(docId);
-                                if (selectedBooking === docId)
-                                  setShowReceipt(true);
-                              }}
+                              onClick={() => setShowReceipt(true)}
                               className="underline text-blue-400"
                             >
                               Show Receipt

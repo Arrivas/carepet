@@ -17,6 +17,10 @@ const nextConfig = {
   images: {
     domains: ["firebasestorage.googleapis.com"],
   },
+  experimental: {
+    // Defaults to 50MB
+    isrMemoryCacheSize: 0,
+  },
 };
 
 module.exports = nextConfig;

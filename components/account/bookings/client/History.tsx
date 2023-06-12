@@ -180,7 +180,7 @@ const History = () => {
                     </div>
                   </div>
                 </div>
-                {!isRated && (
+                {!isRated && user.userType === "Client" && (
                   <div className="h-full w-full my-2 flex flex-row gap-2 justify-end ">
                     <button
                       onClick={() => {

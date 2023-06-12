@@ -59,7 +59,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
       user?.userType === "Client"
         ? query(
             collection(bookingsDocRef, "bookings"),
-            where("__name__", "in", user?.bookedDocIds || []),
+            where("__name__", "in", user?.bookedDocIds),
             where("status", "in", statusArray)
           )
         : query(
@@ -427,7 +427,10 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                           <div className="flex justify-between w-full my-2">
                             <span>Payment Receipt</span>
                             <button
-                              onClick={() => setShowReceipt(true)}
+                              onClick={() => {
+                                setSelectedBooking(item);
+                                setShowReceipt(true);
+                              }}
                               className="underline text-blue-400"
                             >
                               Show Receipt
@@ -445,7 +448,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                       <button
                         onClick={() => {
                           setIsOpen(true);
-                          setSelectedBooking(item)
+                          setSelectedBooking(item);
                         }}
                         className="text-white flex items-center flex-row bg-green-550 hover:bg-green-600 px-5 py-3 min-w-[120px] rounded-md"
                       >

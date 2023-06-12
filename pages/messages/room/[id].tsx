@@ -26,7 +26,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const messages: any[] = [];
   querySnapshot.forEach((doc) => messages.push(doc.data()));
 
-  // Map data to an array of path objects with params (id)
   const paths = messages.map((item: any) => {
     return {
       params: { id: item.chatId },

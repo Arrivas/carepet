@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Spinner from "../Spinner";
 import BookingDetailsTab from "./BookingDetailsTab";
+import RatingsTab from "./RatingsTab";
 
 interface BookingDetailsProps {
   petServiceData: any;
@@ -74,8 +75,27 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           {/* right side */}
           <div className="flex flex-col px-5">
             <div className="">
+              <div className="flex flex-row p-2">
+                <button
+                  className={`flex-grow border-b pb-2 ${
+                    !openRatings ? "border-black" : "border-gray-200"
+                  }`}
+                  onClick={() => setOpenRatings(false)}
+                >
+                  Booking Details
+                </button>
+                <button
+                  className={`flex-grow border-b pb-2 ${
+                    !openRatings ? "border-gray-200" : "border-black"
+                  }`}
+                  onClick={() => setOpenRatings(true)}
+                >
+                  Ratings
+                </button>
+              </div>
+
               {openRatings ? (
-                <></>
+                <RatingsTab ratings={ratings} />
               ) : (
                 <BookingDetailsTab
                   dateArray={dateArray}
@@ -88,7 +108,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 />
               )}
             </div>
-            {user?.userType === "Client" && (
+            {user?.userType === "Client" && !openRatings && (
               <div className="flex gap-1 my-5">
                 <button
                   onClick={() => router.back()}

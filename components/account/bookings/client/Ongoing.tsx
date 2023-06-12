@@ -339,7 +339,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
     <>
       <div className="overflow-y-auto max-h-[99%]">
         {bookings
-          ?.filter((item) => {
+          ?.filter((item: any) => {
             if (
               item.status === "pendingPayment" ||
               item.status === "ongoing" ||
@@ -347,11 +347,11 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
               item.status === "paymentRejected"
             ) {
               // @ts-ignore
-              return user?.bookedDocIds.includes(item?.docId);
+              return user?.bookedDocIds?.includes(item?.docId);
             }
             return false;
           })
-          .map((item) => {
+          .map((item: any) => {
             const {
               bookingDetails,
               clientDetails,

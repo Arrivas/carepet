@@ -445,6 +445,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                       <button
                         onClick={() => {
                           setIsOpen(true);
+                          setSelectedBooking(item)
                         }}
                         className="text-white flex items-center flex-row bg-green-550 hover:bg-green-600 px-5 py-3 min-w-[120px] rounded-md"
                       >

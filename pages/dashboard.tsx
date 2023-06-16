@@ -84,6 +84,7 @@ const dashboard = () => {
     <ProtectedRoute>
       {user?.userType === "Client" ? (
         <>
+          <title>Dashboard</title>
           <div className="p-5">
             <label className="mb-2  text-sm font-medium text-gray-900 sr-only">
               Search

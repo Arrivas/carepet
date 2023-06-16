@@ -107,7 +107,7 @@ const profile = () => {
   return (
     <>
       <title>Profile</title>
-      <div className="h-screen bg-gray-100 p-4 font-Nunito">
+      <div className="h-screen bg-gray-50 p-4 font-Nunito">
         <h4 className="my-3 font-semibold text-lg">Account Settings</h4>
         <div className="bg-white rounded-md h-[90%] overflow-hidden flex flex-col md:flex-row relative">
           <div className="flex flex-row md:flex-col items-start min-w-[227px] p-5 pb-6 gap-1 md:gap-3 border-r border-gray-100 overflow-x-auto overflow-y-hidden">

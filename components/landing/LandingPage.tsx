@@ -7,7 +7,7 @@ const LandingPage = () => {
   return (
     <>
       <title>Carepet | Home</title>
-      <div>
+      <div className="font-Nunito">
         <div className="home-container">
           <section className="home-hero">
             <div className="home-main">

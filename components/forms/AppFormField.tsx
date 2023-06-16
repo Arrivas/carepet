@@ -70,7 +70,9 @@ const AppFormField: React.FC<AppFormField> = ({
         ) : null}
       </div>
       {errors[name] && (
-        <p className={`text-red-400 bottom-2 h-[24px]`}>{errors[name]}</p>
+        <p className={`text-red-400 bottom-2 h-[24px]`}>
+          {errors[name] ? errors[name] : ""}
+        </p>
       )}
     </div>
   );

@@ -37,13 +37,13 @@ const BookingsTab = () => {
   const bookings = useSelector((state: RootState) => state.bookings.bookings);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted) {
-      fetchBookings().then((res) => dispatch(setBookings(res)));
-    }
-    return () => {
-      isMounted = false;
-    };
+    // let isMounted = true;
+    // if (isMounted) {
+    //   fetchBookings().then((res) => dispatch(setBookings(res)));
+    // }
+    // return () => {
+    //   isMounted = false;
+    // };
   }, []);
 
   return (

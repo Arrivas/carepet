@@ -7,6 +7,7 @@ interface SubmitButtonProps {
   containerClass?: string;
   textClass?: string;
   disabled?: boolean;
+  customBgColor?: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
@@ -14,15 +15,20 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   containerClass,
   textClass,
   disabled,
+  customBgColor,
   ...rest
 }) => {
   const { handleSubmit } = useFormikContext();
   return (
     <button
       type="submit"
-      className={`w-full h-[40px] mt-[12px] flex items-center justify-center rounded-md ${
-        !disabled ? "bg-green-550" : "bg-gray-400"
-      } ${!disabled && "hover:bg-green-500"} ${containerClass}`}
+      className={` w-full h-[40px] flex items-center justify-center rounded-md ${
+        !disabled
+          ? `${customBgColor ? customBgColor : "bg-green-550"}`
+          : "bg-gray-400"
+      } ${
+        !disabled && `${customBgColor ? customBgColor : "hover:bg-green-600"} `
+      } ${containerClass}`}
       onClick={() => {
         handleSubmit();
       }}

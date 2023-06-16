@@ -23,8 +23,19 @@ import { firestore } from "../../config/firebase";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
+const ongoingStatusArray = [
+  "pendingPayment",
+  "ongoing",
+  "paymentSubmitted",
+  "paymentRejected",
+];
+
 const Charts = () => {
-  const [chartDetails, setChartDetails] = useState({ booked: 0, cancelled: 0 });
+  const [chartDetails, setChartDetails] = useState({
+    booked: 0,
+    ongoing: 0,
+    cancelled: 0,
+  });
   const user = useSelector((state: RootState) => state.user.user);
 
   const fetchBookings = () => {
@@ -40,7 +51,12 @@ const Charts = () => {
               ...prevState,
               booked: prevState.booked + 1,
             }));
-          else {
+          else if (ongoingStatusArray.includes(bookingsDoc?.data()?.status)) {
+            setChartDetails((prevState) => ({
+              ...prevState,
+              ongoing: prevState.ongoing + 1,
+            }));
+          } else {
             setChartDetails((prevState) => ({
               ...prevState,
               cancelled: prevState.cancelled + 1,
@@ -67,6 +83,7 @@ const Charts = () => {
   const data = [
     {
       name: "Clients",
+      "ongoing services": chartDetails.ongoing,
       "booked services": chartDetails.booked,
       "cancelled services": chartDetails.cancelled,
     },
@@ -97,8 +114,9 @@ const Charts = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="booked services" fill="#6BA583" />
-            <Bar dataKey="cancelled services" fill="#A6766E" />
+            <Bar dataKey="booked services" fill="#3b9679" />
+            <Bar dataKey="ongoing services" fill="#75bccb" />
+            <Bar dataKey="cancelled services" fill="#ffa285" />
           </BarChart>
         </ResponsiveContainer>
       </div>

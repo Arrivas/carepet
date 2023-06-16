@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { RootState, store } from "../store";
+import { store } from "../store";
 import { setUser } from "../store/userSlice";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import { firestore } from "../config/firebase";
@@ -186,7 +186,7 @@ const fetchUserData = async (email: string | null | undefined) => {
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const [refreshing, setRefreshing] = useState(false);
   const [openNav, setOpenNav] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState<any>(null);
@@ -207,7 +207,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     let interval: any;
     if (!user?.emailVerified && user?.email) {
       interval = setInterval(() => {
-        console.log("asd");
         if (user?.email && !refreshing) {
           if (user?.emailVerified === true) {
             user.reload();
@@ -227,6 +226,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       clearInterval(interval);
     };
   }, [user?.emailVerified, user]);
+
   return (
     <>
       <Toaster />
@@ -247,11 +247,12 @@ function MyApp({ Component, pageProps }: AppProps) {
                 pathName === "/gallery" ||
                 pathName === "/about" ||
                 pathName === "/login" ||
+                pathName === "/forgot" ||
                 pathName === "/create/account"
                   ? ""
-                  : openNav
-                  ? ""
-                  : "ml-0 md:ml-64"
+                  : !openNav
+                  ? "ml-0 md:ml-64"
+                  : ""
               }`}
             >
               <NavigationLoader />

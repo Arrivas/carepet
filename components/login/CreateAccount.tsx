@@ -122,55 +122,75 @@ const CreateAccount = () => {
   return (
     <>
       <title>Create Account</title>
-      <div className="flex items-center justify-center">
-        <div className="pt-1 h-[550px] xs:h-screen w-[455px] xs:w-[375px] font-roboto relative px-2 xs:px-5">
-          <img
-            className="h-[1.8rem] object-cover object-center my-10"
-            src="/logo-black.png"
-            alt="logo"
-          />
-          <h1 className="text-3xl font-semibold">Create your Account</h1>
-          <p className="text-gray-300">Enter the fields below to get started</p>
-          {/* form */}
-          <FormikField
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={validationSchema}
-          >
-            <div className="flex flex-col gap-2 mt-4 mb-2">
-              <p>Full name*</p>
-              <AppFormField name="name" placeholder="Name" />
-              <p>Age*</p>
-              <AppFormField name="age" placeholder="Age" />
-              <p>Email address*</p>
-              <AppFormField name="email" placeholder="Email" />
-              <p>Password*</p>
-              <AppFormField
-                type="password"
-                name="password"
-                placeholder="Password"
-                showPassword={showPassword}
-                onShowPassword={setShowPassword}
+      <div className="bg-[#68a98b] min-h-screen w-full flex items-center justify-center font-Montserrat">
+        <div className="bg-white flex min-w-[350px] md:min-w-[48rem] shadow-lg md:min-h-[400px] rounded-md overflow-hidden flex-col md:flex-row">
+          <div className="flex-1 relative hidden md:block">
+            <img
+              className="absolute top-0 left-0 h-full w-full object-cover"
+              src="../../hero/playground_assets/kneel.svg"
+              alt=""
+            />
+          </div>
+          <div className="flex-1 relative">
+            <div className="flex flex-col p-5 justify-center mx-auto">
+              <img
+                className="h-[50px] w-[250px] object-contain"
+                src="../../hero/playground_assets/logo3.png"
+                alt=""
               />
-              <p>User Type*</p>
-              <SelectForm
-                select={selectedUserType}
-                onSetSelect={setSelectedUserType}
-                selectItems={userTypeItems}
-              />
-            </div>
-            {/* forgot password */}
+              <h2 className="font-black text-[1.2rem]">Sign Up To Carepet</h2>
+              <FormikField
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                validationSchema={validationSchema}
+              >
+                <div className="flex flex-col gap-1 mt-4 mb-2">
+                  <div className="flex flex-col md:flex-row md:gap-1">
+                    <div className="flex-2 space-y-1">
+                      <p>Full name*</p>
+                      <AppFormField name="name" placeholder="Name" />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <p>Age*</p>
+                      <AppFormField name="age" placeholder="Age" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p>Email address*</p>
+                    <AppFormField name="email" placeholder="Email" />
+                  </div>
+                  <p>Password*</p>
+                  <AppFormField
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    showPassword={showPassword}
+                    onShowPassword={setShowPassword}
+                  />
+                  <p>User Type*</p>
+                  <SelectForm
+                    select={selectedUserType}
+                    onSetSelect={setSelectedUserType}
+                    selectItems={userTypeItems}
+                  />
+                </div>
 
-            <SubmitButton title="Create Account" disabled={loading} />
-            <div className="flex justify-center w-full my-5 pb-8">
-              <p className="text-gray-400">
-                Already have an account?{" "}
-                <Link href="/login" className="text-blue-500 text-[14px]">
-                  Log in
-                </Link>
-              </p>
+                <SubmitButton
+                  customBgColor="bg-[#318b9e] hover:bg-[#277f91]"
+                  title="Create Account"
+                  disabled={loading}
+                />
+                <div className="flex justify-center w-full my-5 pb-8">
+                  <p className="text-gray-400">
+                    Already have an account?{" "}
+                    <Link href="/login" className="text-blue-500 text-[14px]">
+                      Log in
+                    </Link>
+                  </p>
+                </div>
+              </FormikField>
             </div>
-          </FormikField>
+          </div>
         </div>
       </div>
     </>

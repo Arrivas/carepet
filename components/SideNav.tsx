@@ -106,16 +106,6 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       fetchChatDetails();
-      document.addEventListener("DOMContentLoaded", function () {
-        const toggleButton = document.querySelector(
-          '[data-drawer-toggle="logo-sidebar"]'
-        );
-        const sidebar = document.getElementById("logo-sidebar");
-
-        toggleButton?.addEventListener("click", function () {
-          sidebar?.classList.toggle("-translate-x-full");
-        });
-      });
     }
   }, []);
 
@@ -127,26 +117,26 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
             <aside
               id="logo-sidebar"
               aria-labelledby="logo-sidebar"
-              className={`fixed top-0 font-Nunito left-0 z-[999] w-64 ${
+              className={`fixed top-0 font-Nunito left-0 z-[999] w-64  ${
                 openNav
-                  ? "-translate-x-full"
-                  : "md:translate-x-0 -translate-x-full"
-              }  h-screen duration-700 ease-in-out transition-transform `}
+                  ? "md:-translate-x-full translate-x-0"
+                  : "-translate-x-full md:translate-x-0"
+              }   h-screen duration-700 ease-in-out transition-transform `}
               aria-label="Sidebar"
             >
               <button
                 onClick={() => setOpenNav(!openNav)}
                 className={`fixed ${
-                  openNav ? "-right-5" : "-right-2"
+                  openNav ? "-right-3" : "-right-4"
                 }  bg-gray-700/40 top-1 rounded-md`}
               >
-                {openNav ? (
+                {!openNav ? (
                   <MdChevronRight size={20} color="#fff" />
                 ) : (
                   <MdChevronLeft size={20} color="#fff" />
                 )}
               </button>
-              <div className="h-full px-3 py-4 overflow-y-auto bg-green-550">
+              <div className="h-full px-3 py-4 overflow-y-auto bg-[#3b9679]">
                 <a
                   href="/dashboard"
                   className="flex items-center justify-center pl-2.5 mb-5"

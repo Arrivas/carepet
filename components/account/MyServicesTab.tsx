@@ -172,9 +172,9 @@ const MyServicesTab = () => {
             {petServices?.map((item) => (
               <li
                 onClick={() => setSelectedService(item)}
-                className={`py-2 px-2 hover:text-white hover:bg-green-550 cursor-pointer ${
+                className={`py-2 px-2 hover:text-white hover:bg-[#319474] cursor-pointer ${
                   item.docId === selectedService?.docId
-                    ? "bg-green-550 text-white"
+                    ? "bg-[#319474] text-white"
                     : ""
                 }`}
                 key={item.docId}
@@ -187,12 +187,12 @@ const MyServicesTab = () => {
         <div className="flex-[3]">
           {selectedService !== undefined && (
             <div className="flex items-center justify-end overflow-y-auto ">
-              <div className="overflow-y-auto  no-scrollbar xs:h-screen w-[90%] font-roboto relative px-2 xs:px-5">
+              <div className="overflow-y-auto h-[80vh] w-full lg:w-[90%] font-roboto relative px-2 lg:px-5">
                 <FormikField
                   initialValues={initialValues}
                   onSubmit={handleSubmit}
                 >
-                  <div className="flex flex-col space-y-2 h-[80vh]">
+                  <div className="flex flex-grow flex-col space-y-2">
                     <AppFormField
                       placeholder="Service Provider Name"
                       name="serviceProviderName"
@@ -239,7 +239,7 @@ const MyServicesTab = () => {
                     >
                       PNG, JPG.
                     </p>
-                    <div className="pb-24">
+                    <div className="pb-16">
                       <SubmitButton title="Save" disabled={loading} />
                     </div>
                   </div>

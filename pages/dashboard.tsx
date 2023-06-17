@@ -46,9 +46,9 @@ const dashboard = () => {
       // const services = [] as any;
       // querySnapshot.forEach((doc) => services.push(doc.data()));
       if (search === "") return [];
-      const petServices = querySnapshot.docs
-        .map((doc) => doc.data())
-        .filter((service) =>
+      const petServices = querySnapshot?.docs
+        ?.map((doc) => doc.data())
+        ?.filter((service) =>
           service.service.serviceName
             ?.toLowerCase()
             .includes(search?.toLowerCase())

@@ -7,6 +7,7 @@ import moment from "moment";
 import CopyToClipboardButton from "../../../helpers/CopyToClipboardButton";
 import { useRouter } from "next/navigation";
 import { firestore } from "../../../../config/firebase";
+import { HiOutlineChevronDown, HiOutlineChevronUp } from "react-icons/hi";
 import {
   collection,
   doc,
@@ -63,7 +64,9 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
       (querySnapshot: QuerySnapshot<DocumentData>) => {
         const results: any = [];
         querySnapshot.forEach((doc) => {
-          results.push(doc.data());
+          const data = doc.data();
+          data.isClientDetailsOpen = false;
+          results.push(data);
         });
         dispatch(setBookings(results));
       }
@@ -326,7 +329,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
     }
     return false;
   });
-
+  console.log(filterBook);
   return (
     <>
       <div className="overflow-y-auto max-h-[99%]">
@@ -348,9 +351,16 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
               docId,
               status,
               paymentImgUrl,
+              isClientDetailsOpen,
             } = item;
 
-            const { clientDocId, clientBookingId } = clientDetails;
+            const {
+              clientDocId,
+              clientBookingId,
+              clientEmail,
+              clientName,
+              clientPhoneNumber,
+            } = clientDetails;
             const { providerDocId, providerName, providerPhone } = providerInfo;
 
             const {
@@ -426,6 +436,49 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                           </button>
                         </div>
                       )}
+                    {/* show client details */}
+                    <button
+                      onClick={() => {
+                        const bookingsCopy = [...filterBook];
+                        const updatedBookings = bookingsCopy.map(
+                          (copyItem: any) => {
+                            if (copyItem.docId === item.docId) {
+                              return {
+                                ...copyItem,
+                                isClientDetailsOpen:
+                                  !copyItem.isClientDetailsOpen,
+                              };
+                            }
+                            return copyItem;
+                          }
+                        );
+                        dispatch(setBookings(updatedBookings));
+                      }}
+                      className="flex justify-between w-full py-3 rounded-md "
+                    >
+                      <span>client details</span>{" "}
+                      {isClientDetailsOpen ? (
+                        <HiOutlineChevronUp size={15} />
+                      ) : (
+                        <HiOutlineChevronDown size={15} />
+                      )}
+                    </button>
+                    {user?.userType !== "Client" && isClientDetailsOpen && (
+                      <div className="flex flex-col gap-2">
+                        <span>
+                          client name:
+                          <span className="font-bold"> {clientName}</span>
+                        </span>
+                        <span>
+                          client email:{" "}
+                          <span className="font-bold">{clientEmail}</span>
+                        </span>
+                        <span>
+                          client phone#:{" "}
+                          <span className="font-bold">{clientPhoneNumber}</span>
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -516,8 +569,10 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                     )}
 
                   <button
-                    onClick={() => router.push(`/messages/room/${docId}`)}
-                    className="text-white flex items-center flex-row bg-[#658ea9] hover:bg-[#487592] px-5 py-3 min-w-[120px] rounded-md "
+                    onClick={() =>
+                      router.push(`/messages/room/${clientBookingId}`)
+                    }
+                    className="text-white flex items-center flex-row bg-[#89b3cc] hover:bg-[#7aadca] px-5 py-3 min-w-[120px] rounded-md "
                   >
                     Send Message
                   </button>

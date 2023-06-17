@@ -85,6 +85,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
               </div>
             ) : null}
             <SubmitButton
+              customBgColor="bg-[#3b9679] hover:bg-[#319474]"
               disabled={loading}
               containerClass="self-end w-[20%] mb-24"
               title="Save"

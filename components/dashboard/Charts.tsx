@@ -40,7 +40,7 @@ const Charts = () => {
 
   const fetchBookings = () => {
     const bookingsCollectionRef = collection(firestore, "petCareProvider");
-    const bookingsDocRef = doc(bookingsCollectionRef, user.docId);
+    const bookingsDocRef = doc(bookingsCollectionRef, user?.docId);
     const chatsCollectionRef = query(collection(bookingsDocRef, "bookings"));
     const unsubscribe = onSnapshot(
       chatsCollectionRef,

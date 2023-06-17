@@ -48,6 +48,10 @@ const messages = () => {
     <>
       <title>Messages</title>
       <div className="font-Nunito p-5">
+        <img
+          src="./hero/playground_assets/respond.svg"
+          className="h-[30%] object-contain -scale-x-[1] fixed bottom-0 right-0 opacity-80 "
+        />
         <h1 className="font-bold text-[2rem] text-gray-600">Messages</h1>
         <div className="flex flex-col gap-2 my-5 max-h-[85vh] overflow-y-auto">
           {messages?.length && !loading ? (

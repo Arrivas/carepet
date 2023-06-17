@@ -236,7 +236,10 @@ const MessagesRoom = () => {
               placeholder="Aa"
             />
             <button type="submit">
-              <IoSend size={25} />
+              <IoSend
+                size={25}
+                color={`${formValue === "" ? "#bbc0b6" : "#000"}`}
+              />
             </button>
           </div>
         </form>

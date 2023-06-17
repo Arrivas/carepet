@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { MdDashboard, MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { BsImage, BsMegaphone, BsCardChecklist } from "react-icons/bs";
-import { AiOutlineUser, AiFillWechat } from "react-icons/ai";
+import { BsImage, BsMegaphone } from "react-icons/bs";
+import { AiOutlineUser } from "react-icons/ai";
 import { CiLogout } from "react-icons/ci";
 import { BiMessageDetail } from "react-icons/bi";
-import { MdAlternateEmail } from "react-icons/md";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { auth } from "../config/firebase";
 import { usePathname, useRouter } from "next/navigation";
 import { setUser } from "../store/userSlice";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  limit,
-  query,
-  where,
-  FieldPath,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 
 interface SideNavProps {
@@ -130,7 +121,7 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
                   openNav ? "-right-3" : "-right-4"
                 }  bg-gray-700/40 top-1 rounded-md`}
               >
-                {!openNav ? (
+                {openNav ? (
                   <MdChevronRight size={20} color="#fff" />
                 ) : (
                   <MdChevronLeft size={20} color="#fff" />

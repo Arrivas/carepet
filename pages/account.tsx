@@ -116,7 +116,9 @@ const profile = () => {
                 <button
                   onClick={() => setActiveTab(item.title)}
                   className={`mr-14 whitespace-nowrap ${
-                    activeTab === item.title ? "bg-green-50 text-green-550" : ""
+                    activeTab === item.title
+                      ? "bg-[#f0fffa] text-[#3b9679]"
+                      : ""
                   } p-2 px-4 rounded-full tracking-wider font-semibold`}
                   key={item.id}
                 >

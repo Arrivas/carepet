@@ -76,7 +76,7 @@ const MessagesRoom = () => {
     // @ts-ignore
     const messageDocRef = doc(messagesRef, chatId);
     // update seen
-    if (user.userType === "Client")
+    if (user?.userType === "Client")
       await updateDoc(messageDocRef, {
         clientSeen: true,
         serviceProviderSeen: false,
@@ -114,7 +114,7 @@ const MessagesRoom = () => {
   };
 
   const setSeen = async (messageDocRef: any) => {
-    if (user.userType === "Client")
+    if (user?.userType === "Client")
       await updateDoc(messageDocRef, {
         clientSeen: true,
       });
@@ -202,7 +202,7 @@ const MessagesRoom = () => {
               chats?.map((item, index: number) => {
                 const isFirst = index === 0;
                 const isLast = index === chats.length - 1;
-                const isClient = user.userType === item.from;
+                const isClient = user?.userType === item.from;
 
                 const customClassName = isClient
                   ? "self-end bg-[#646464] p-2 text-white"

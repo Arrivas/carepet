@@ -65,28 +65,35 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
   const pathName = usePathname();
 
   const fetchChatDetails = () => {
-    if (user?.bookedDocIds === undefined) return;
+    if (!user || !user.bookedDocIds) return;
+
     const messagesRef = collection(firestore, "messages");
 
     try {
       const msgQuery = query(
         messagesRef,
         where(
-          user?.userType === "Client" ? "clientSeen" : "serviceProviderSeen",
+          user.userType === "Client" ? "clientSeen" : "serviceProviderSeen",
           "==",
           false
         ),
-        where("__name__", "in", user?.bookedDocIds)
+        where("__name__", "in", user.bookedDocIds)
       );
 
-      const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
-        const results: any = [];
-        querySnapshot.forEach((doc) => {
-          results.push(doc.data());
-        });
+      const unsubscribe = onSnapshot(
+        msgQuery,
+        (querySnapshot) => {
+          const results = [];
+          querySnapshot.forEach((doc) => {
+            results.push(doc.data());
+          });
 
-        setMessageCount(results?.length);
-      });
+          setMessageCount(results.length);
+        },
+        (error) => {
+          console.error("Error fetching messages:", error);
+        }
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -96,9 +103,14 @@ const SideNav: React.FC<SideNavProps> = ({ openNav, setOpenNav }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      fetchChatDetails();
+      const unsubscribe = fetchChatDetails();
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
     }
-  }, []);
+  }, [user?.bookedDocIds]);
 
   return (
     <>

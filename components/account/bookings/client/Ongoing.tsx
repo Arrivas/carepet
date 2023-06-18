@@ -52,7 +52,7 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
 
   useEffect(() => {
     const getCollection =
-      user?.userType === "Pet-Care Provider" ? "petCareProvider" : "client";
+      user?.userType === "Client" ? "client" : "petCareProvider";
     const userBookingsRef = collection(firestore, getCollection);
     const bookingsDocRef = doc(userBookingsRef, user.docId);
     const chatsCollectionRef = query(
@@ -317,19 +317,21 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
       });
     }
   };
-  const filterBook = bookings.filter((item) => {
-    if (
-      (user?.userType === "Client" &&
-        // @ts-ignore
-        user?.bookedDocIds.includes(item.docId)) ||
-      (user?.userType === "Pet-Care Provider" &&
-        statusArray.includes(item.status))
-    ) {
-      return true;
+  const filterBook = bookings.filter((item: any) => {
+    if (user && user.userType === "Client" && user.bookedDocIds) {
+      // @ts-ignore
+      if (user.bookedDocIds.includes(item.docId)) {
+        return true;
+      }
+    } else if (user && user.userType === "Pet-Care Provider" && statusArray) {
+      if (item && statusArray.includes(item.status)) {
+        // Add a null check for item here
+        return true;
+      }
     }
     return false;
   });
-  console.log(filterBook);
+
   return (
     <>
       <div className="overflow-y-auto max-h-[99%]">
@@ -437,47 +439,52 @@ const Ongoing: React.FC<OngoingProps> = ({}) => {
                         </div>
                       )}
                     {/* show client details */}
-                    <button
-                      onClick={() => {
-                        const bookingsCopy = [...filterBook];
-                        const updatedBookings = bookingsCopy.map(
-                          (copyItem: any) => {
-                            if (copyItem.docId === item.docId) {
-                              return {
-                                ...copyItem,
-                                isClientDetailsOpen:
-                                  !copyItem.isClientDetailsOpen,
-                              };
-                            }
-                            return copyItem;
-                          }
-                        );
-                        dispatch(setBookings(updatedBookings));
-                      }}
-                      className="flex justify-between w-full py-3 rounded-md "
-                    >
-                      <span>client details</span>{" "}
-                      {isClientDetailsOpen ? (
-                        <HiOutlineChevronUp size={15} />
-                      ) : (
-                        <HiOutlineChevronDown size={15} />
-                      )}
-                    </button>
                     {user?.userType !== "Client" && isClientDetailsOpen && (
-                      <div className="flex flex-col gap-2">
-                        <span>
-                          client name:
-                          <span className="font-bold"> {clientName}</span>
-                        </span>
-                        <span>
-                          client email:{" "}
-                          <span className="font-bold">{clientEmail}</span>
-                        </span>
-                        <span>
-                          client phone#:{" "}
-                          <span className="font-bold">{clientPhoneNumber}</span>
-                        </span>
-                      </div>
+                      <>
+                        <button
+                          onClick={() => {
+                            const bookingsCopy = [...filterBook];
+                            const updatedBookings = bookingsCopy.map(
+                              (copyItem: any) => {
+                                if (copyItem.docId === item.docId) {
+                                  return {
+                                    ...copyItem,
+                                    isClientDetailsOpen:
+                                      !copyItem.isClientDetailsOpen,
+                                  };
+                                }
+                                return copyItem;
+                              }
+                            );
+                            dispatch(setBookings(updatedBookings));
+                          }}
+                          className="flex justify-between w-full py-3 rounded-md "
+                        >
+                          <span>client details</span>{" "}
+                          {isClientDetailsOpen ? (
+                            <HiOutlineChevronUp size={15} />
+                          ) : (
+                            <HiOutlineChevronDown size={15} />
+                          )}
+                        </button>
+
+                        <div className="flex flex-col gap-2">
+                          <span>
+                            client name:
+                            <span className="font-bold"> {clientName}</span>
+                          </span>
+                          <span>
+                            client email:{" "}
+                            <span className="font-bold">{clientEmail}</span>
+                          </span>
+                          <span>
+                            client phone#:{" "}
+                            <span className="font-bold">
+                              {clientPhoneNumber}
+                            </span>
+                          </span>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
